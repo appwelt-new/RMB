@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "158572031376",
+    "project_id": "rmbapp-5147e",
+    "storage_bucket": "rmbapp-5147e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158572031376:android:46b4346277c27d509c1715",
+        "android_client_info": {
+          "package_name": "com.theappwelt.rmb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "158572031376-jeikjkn65eo6diku0u5tf349ov0etj1r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.theappwelt.rmb",
+            "certificate_hash": "13192d1a60d53ca32a9395dc47ed31d44975ae61"
+          }
+        },
+        {
+          "client_id": "158572031376-n3j3rdi1njrv663kqjr9ic2sqrclbmej.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDR8Qcnjw5LlGaMAkgMXdqj_b_JcgadumE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "158572031376-n3j3rdi1njrv663kqjr9ic2sqrclbmej.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

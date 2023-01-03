@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/rotary_logo1"
+    tools:context=".activity.Visitor.AddVisitorActivity">
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparentbg">
+  <LinearLayout
+      android:layout_margin="5dp"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/round_border_black"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_margin="2dp"
+                android:text=" First Name* "
+                android:textColor="@color/NavyBlue"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/avFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/round_border_black"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_margin="2dp"
+            android:text=" Last Name* "
+            android:textColor="@color/NavyBlue"
+            android:textSize="15dp" />
+
+        <EditText
+            android:id="@+id/avLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/round_border_black"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_margin="2dp"
+            android:text=" Business Name* "
+            android:textColor="@color/NavyBlue"
+            android:textSize="15dp" />
+
+        <EditText
+            android:id="@+id/avBusinessName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="70dp"
+          android:layout_margin="5dp"
+          android:background="@drawable/round_border_black"
+          android:orientation="vertical">
+
+          <TextView
+              android:layout_width="match_parent"
+              android:layout_height="20dp"
+              android:layout_margin="2dp"
+              android:text=" Mobile Number* "
+              android:textColor="@color/NavyBlue"
+              android:textSize="15dp" />
+
+          <EditText
+              android:id="@+id/avMobileNumber"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:backgroundTint="@color/white"
+              android:textColor="@color/black"
+              android:textSize="18dp" />
+      </LinearLayout>
+
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="70dp"
+          android:layout_margin="5dp"
+          android:background="@drawable/round_border_black"
+          android:orientation="vertical">
+
+          <TextView
+              android:layout_width="match_parent"
+              android:layout_height="20dp"
+              android:layout_margin="2dp"
+              android:text=" Email* "
+              android:textColor="@color/NavyBlue"
+              android:textSize="15dp" />
+
+          <EditText
+              android:id="@+id/avEmail"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:backgroundTint="@color/white"
+              android:textColor="@color/black"
+              android:textSize="18dp" />
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="70dp"
+          android:layout_margin="5dp"
+          android:background="@drawable/round_border_black"
+          android:orientation="vertical">
+
+          <TextView
+              android:layout_width="match_parent"
+              android:layout_height="20dp"
+              android:layout_margin="2dp"
+              android:text=" Message* "
+              android:textColor="@color/NavyBlue"
+              android:textSize="15dp" />
+
+          <EditText
+              android:id="@+id/avMessage"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:backgroundTint="@color/white"
+              android:textColor="@color/black"
+              android:textSize="18dp" />
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="70dp"
+          android:layout_margin="5dp"
+          android:background="@drawable/round_border_black"
+          android:orientation="vertical">
+
+          <TextView
+              android:layout_width="match_parent"
+              android:layout_height="20dp"
+              android:layout_margin="2dp"
+              android:text=" Role* "
+              android:textColor="@color/NavyBlue"
+              android:textSize="15dp" />
+
+          <EditText
+              android:id="@+id/avRole"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:backgroundTint="@color/white"
+              android:textColor="@color/black"
+              android:textSize="18dp" />
+      </LinearLayout>
+
+          <TextView
+              android:id="@+id/saveVisitorData"
+              android:layout_width="150dp"
+              android:layout_height="35dp"
+              android:layout_margin="15dp"
+              android:background="@drawable/round_border_blue"
+              android:gravity="center"
+              android:text=" Save "
+              android:textColor="@color/white"
+              android:textSize="18dp"
+              android:textStyle="bold"
+              android:layout_gravity="center"
+              />
+
+  </LinearLayout>
+</androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_bg"
+    android:layout_margin="20dp"
+    app:barrierAllowsGoneWidgets="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:background="@color/NavyBlue"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text=" Add Event "
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:fontFamily="sans-serif"
+            />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/round_border_black"
+                    android:orientation="vertical"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:text="  Event Name*"
+                        android:textColor="@color/NavyBlue"
+                        android:textSize="12sp"
+                        android:layout_margin="1dp"
+                        />
+                    <EditText
+                        android:id="@+id/aeEventName"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:textStyle="normal"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:layout_margin="1dp"
+                        android:foregroundTint="@color/black"
+                        android:backgroundTint="@color/transparent"
+                        android:singleLine="true"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/round_border_black"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_margin="2dp"
+                        android:text="Event Type"
+                        android:textColor="@color/NavyBlue"
+                        android:textSize="15sp" />
+                    <Spinner
+                        android:id="@+id/aeEventTypeSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_margin="2dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/round_border_black"
+                    android:orientation="vertical"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:text="  Event Date*"
+                        android:textColor="@color/NavyBlue"
+                        android:textSize="12sp"
+                        android:layout_margin="1dp"
+                        />
+                    <EditText
+                        android:id="@+id/aeEventDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:textStyle="normal"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:layout_margin="1dp"
+                        android:foregroundTint="@color/black"
+                        android:backgroundTint="@color/transparent"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/round_border_black"
+                    android:orientation="vertical"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:text="  Event Time"
+                        android:textColor="@color/NavyBlue"
+                        android:textSize="12sp"
+                        android:layout_margin="1dp"
+                        />
+                    <EditText
+                        android:id="@+id/aeEventTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:textStyle="normal"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:layout_margin="1dp"
+                        android:foregroundTint="@color/black"
+                        android:backgroundTint="@color/transparent"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/round_border_black"
+                    android:orientation="vertical"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:text="  Event Description*"
+                        android:textColor="@color/NavyBlue"
+                        android:textSize="12sp"
+                        android:layout_margin="1dp"
+                        />
+                    <EditText
+                        android:id="@+id/aeEventDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:textStyle="normal"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:layout_margin="1dp"
+                        android:foregroundTint="@color/black"
+                        android:backgroundTint="@color/transparent"
+                        />
+                </LinearLayout>
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:id="@+id/saveEvent"
+                        android:background="@drawable/round_border_blue"
+                        android:layout_width="150dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"
+                        android:text="save"
+                        android:layout_gravity="center"
+                        android:layout_margin="15dp"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:layout_height="40dp"/>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.theappwelt.rmb">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/logo"
+        android:label="RMB"
+        android:roundIcon="@mipmap/logo"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.HBC"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".activity.auth.OtpVerifyActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.features.WebsiteView"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <!--
+        <activity
+            android:name=".ShowWebsiteActivity"
+            android:exported="false"
+            android:label="@string/title_activity_show_website"
+            android:theme="@style/Theme.HBC.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        -->
+        <activity
+            android:name=".activity.slipManagement.MeetingSummaryDetailsActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.auth.SubcriptionActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.slipManagement.AttendMeetingListActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.businessCounter.ReceivedBusinessActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.request.NotIntrestedActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.request.IntrestedActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.request.CancelRequestActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.request.ViewIntrMembersActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.request.MyRequestListActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.request.RequestListActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.features.RequestFormActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activity.businessCounter.BusinessCounterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Documents.MyDocumentsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Visitor.VisitorsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.slipManagement.SlipmanagementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Visitor.AddVisitorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.features.CalenderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.features.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.features.BusinessDirectories"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Documents.DocumentListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Documents.MyDocumentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Documents.MyVideoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Documents.MyPresentationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.businessCounter.CreateDirectBusinessActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.businessCounter.CreateReferralBusinessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.businessCounter.GivenBuisnessListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.slipManagement.CreateMultiMeetingSlipActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.businessCounter.BusinessReceivedListActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.slipManagement.ReferralSlipAddingActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.slipManagement.CreateGreatBhetActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.slipManagement.ReferralsReceived"
+            android:exported="false" />
+        <activity
+            android:name=".activity.slipManagement.MeetingRequestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.slipManagement.MeetingsCreatedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.slipManagement.ReferralsGivenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.features.EventManagementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Visitor.VisitorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.auth.IAmInterestedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.auth.SignInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.auth.LogInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.features.SplashScreen"
+            android:theme="@style/splashScreenTheme"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.features.MainActivity"
+            android:exported="true"
+            android:label="RMB"
+            android:theme="@style/Theme.HBC.NoActionBar" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
+
+</manifest>

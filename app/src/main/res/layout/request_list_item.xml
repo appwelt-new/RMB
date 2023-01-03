@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="10dp"
+    android:padding="5dp"
+    app:cardElevation="10dp"
+    app:cardMaxElevation="12dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true"
+    >
+
+    <LinearLayout
+        android:layout_margin="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/border">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Reqirement name  "
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Priority  "
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:id="@+id/memName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Member Name  "
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:id="@+id/memEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Email  "
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="5dp"/>
+
+                <TextView
+                    android:id="@+id/memMobNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  Mobile No.  "
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="5dp"/>
+
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/coloreGraylight" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/txtReq_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  "
+                    android:textSize="15sp"
+                    android:visibility="gone"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="5dp"/>
+
+                <TextView
+                    android:id="@+id/txtreqName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:id="@+id/txtpriority"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:id="@+id/txtFLName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:id="@+id/txtEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="5dp"/>
+
+                <TextView
+                    android:id="@+id/txtmobNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="5dp"/>
+
+
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/llIntrest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtIntrested"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/round_border_blue"
+                android:gravity="center"
+                android:text="Intrested "
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtNotIntrested"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/round_border_red"
+                android:gravity="center"
+                android:text="Not Intrested "
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/txtmsg"
+            android:layout_width="150dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/round_border_blue"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text= "Already Show Intrest "
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/nav_1"
+        android:icon="@drawable/ic_baseline_dashboard_24"
+        android:title=" Dashboard " />
+    <item
+        android:id="@+id/nav_2"
+        android:icon="@drawable/ic_baseline_calendar_month_24"
+        android:title=" Calender " />
+
+    <item
+        android:visible="false"
+        android:id="@+id/nav_3"
+        android:icon="@drawable/ic_baseline_business_center_24"
+        android:title=" Business Directories " />
+
+    <item
+        android:id="@+id/nav_4"
+        android:icon="@drawable/ic_baseline_note_alt_24"
+        android:title="Slip Management" />
+
+    <item
+        android:id="@+id/nav_5"
+        android:icon="@drawable/ic_baseline_business_center_24"
+        android:title="Business Counter" />
+    <item
+        android:id="@+id/nav_6"
+        android:icon="@drawable/ic_baseline_credit_card_24"
+        android:title="Visitor Invitation" />
+
+    <item
+        android:id="@+id/nav_7"
+        android:icon="@drawable/ic_file"
+        android:title="My Documents" />
+
+    <item
+        android:id="@+id/nav_8"
+        android:icon="@drawable/ic_baseline_note_alt_24"
+        android:title="My Requests" />
+    <item
+        android:id="@+id/nav_9"
+        android:icon="@drawable/account"
+        android:title="Profile" />
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_baseline_logout_24"
+        android:title="Logout" />
+</menu>
