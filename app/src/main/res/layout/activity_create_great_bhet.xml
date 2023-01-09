@@ -172,11 +172,11 @@
                         android:textSize="15dp" />
 
                     <EditText
-                        android:editable="false"
                         android:id="@+id/gbaExpectedStartDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/white"
+                        android:editable="false"
                         android:textColor="@color/black"
                         android:textSize="18dp" />
                 </LinearLayout>
@@ -197,11 +197,11 @@
                         android:textSize="15dp" />
 
                     <EditText
-                        android:editable="false"
                         android:id="@+id/gbaExpectedStartTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/white"
+                        android:editable="false"
                         android:textColor="@color/black"
                         android:textSize="18dp" />
                 </LinearLayout>

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -16,8 +17,9 @@ import com.theappwelt.rmb.activity.features.MainActivity;
 
 public class SlipmanagementActivity extends AppCompatActivity {
 
-    LinearLayout createGreatBhet, createMultipleMember,meetingCreated,meetingRequestLayout,addReferralSlipLayout,referralGivenLayout,referralsReceivedLayout;
+    LinearLayout createGreatBhet, createMultipleMember, meetingCreated, meetingRequestLayout, addReferralSlipLayout, referralGivenLayout, referralsReceivedLayout;
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +41,7 @@ public class SlipmanagementActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent( getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 this.finish();
                 return true;
@@ -54,6 +56,7 @@ public class SlipmanagementActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
+
     private void onClick() {
 
         createGreatBhet.setOnClickListener(new View.OnClickListener() {

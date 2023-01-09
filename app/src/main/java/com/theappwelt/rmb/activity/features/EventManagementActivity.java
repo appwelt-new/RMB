@@ -12,8 +12,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
 import com.theappwelt.rmb.R;
 import com.theappwelt.rmb.adapters.EventManagementAdapter;
+import com.theappwelt.rmb.model.EventList;
+import com.theappwelt.rmb.utilities.Constant;
 import com.theappwelt.rmb.utilities.ServiceHandler;
 import com.theappwelt.rmb.utilities.Utils;
 
@@ -32,6 +35,7 @@ public class EventManagementActivity extends AppCompatActivity {
     ArrayList<String> host = new ArrayList<>();
     RecyclerView rvEventManagement;
     EventManagementAdapter eventManagementAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +47,7 @@ public class EventManagementActivity extends AppCompatActivity {
         new eventManagementData().execute();
 
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -50,10 +55,11 @@ public class EventManagementActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
+
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent( getApplicationContext(),MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 this.finish();
                 return true;
@@ -62,27 +68,23 @@ public class EventManagementActivity extends AppCompatActivity {
     }
 
 
-    public  class eventManagementData extends AsyncTask<String, Void, String> {
+    public class eventManagementData extends AsyncTask<String, Void, String> {
         private String jsonStr, responseSuccess, responseMsg;
         private JSONObject jsonData;
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(EventManagementActivity.this);
-
                 RequestBody values = new FormBody.Builder()
                         .build();
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/event/eventList", ServiceHandler.GET);
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "event/eventList", ServiceHandler.GET);
                 Log.d("visitor: ", "> " + jsonStr);
-
             } catch (final Exception e) {
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {
@@ -99,7 +101,6 @@ public class EventManagementActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -107,15 +108,26 @@ public class EventManagementActivity extends AppCompatActivity {
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
                     Log.d("isSuccess", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
+                        String jsonString = jsonData.toString();
+                        EventList data = new EventList();
+                        Gson gson = new Gson();
+                        data = gson.fromJson(jsonString, EventList.class);
+
                         JSONArray userArray = jsonData.getJSONArray("message_text");
-                        Log.d("eventSuccess",userArray.toString());
+                        Log.d("eventSuccess", userArray.toString());
                         JSONObject userDetail = userArray.getJSONObject(0);
-                        name.add( userDetail.getString("event_name"));
+                        name.add(userDetail.getString("event_name"));
                         date.add(userDetail.getString("event_date_and_time"));
-                        location.add (" "+userDetail.getString("event_location"));
+                        location.add(" " + userDetail.getString("event_location"));
                         host.add(userDetail.getString("event_host"));
 
-Log.d("event", name.get(0));
+                        Log.d("event", name.get(0));
+
+                        if (data.getMessageText() != null && !data.getMessageText().isEmpty()) {
+                            rvEventManagement.setLayoutManager(new LinearLayoutManager(EventManagementActivity.this));
+                            eventManagementAdapter = new EventManagementAdapter(EventManagementActivity.this, data.getMessageText());
+                            rvEventManagement.setAdapter(eventManagementAdapter);
+                        }
                     } else {
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(EventManagementActivity.this, responseMsg, false, false);
@@ -125,15 +137,6 @@ Log.d("event", name.get(0));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            rvEventManagement.setLayoutManager(new LinearLayoutManager(EventManagementActivity.this));
-           eventManagementAdapter  = new EventManagementAdapter(EventManagementActivity.this,name,date,location,host);
-            rvEventManagement.setAdapter(eventManagementAdapter);
-
         }
     }
-
-
-
-
 }

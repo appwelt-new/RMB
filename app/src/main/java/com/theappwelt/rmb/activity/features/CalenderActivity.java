@@ -1,11 +1,11 @@
 package com.theappwelt.rmb.activity.features;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -29,7 +29,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.theappwelt.rmb.JavaClasses.setDate;
 import com.theappwelt.rmb.R;
+import com.theappwelt.rmb.utilities.Constant;
 import com.theappwelt.rmb.utilities.ServiceHandler;
 import com.theappwelt.rmb.utilities.Utils;
 
@@ -37,25 +39,45 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
 public class CalenderActivity extends AppCompatActivity {
-TextView addEvent;
-ArrayList<String> eventTypeList = new ArrayList<>();
-ArrayList<String> eventTypeIdList = new ArrayList<>();
-String selectedEvent = "";
-String selectedEventId = "";
+    TextView addEvent;
+    ArrayList<String> eventTypeList = new ArrayList<>();
+    ArrayList<String> eventTypeIdList = new ArrayList<>();
+    String selectedEvent = "";
+    String selectedEventId = "";
     String userId = "";
     String date2 = "";
     String eventName = "";
     String eventType = "";
     String time2 = "";
-    String description2 ="";
+    String EventEndDate = "";
+    String EventEndTime = "";
+    String description2 = "";
+    String event_location = "";
+    String event_host = "";
+    String event_url = "";
+    String event_price = "";
+    String event_rating = "";
+    String business_CategoryId = "";
+    String branch_id = "";
     private int mYear, mMonth, mDay, mHour, mMinute;
+    TextView tv_be, tv_ae, tv_me;
+
+    // event count
+    int birthday_event_count = 0;
+    int anniversary_even_count = 0;
+    int my_event_count = 0;
+
+    //calender view
+    CalendarView calendariew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,25 +88,31 @@ String selectedEventId = "";
         actionBar.setDisplayHomeAsUpEnabled(true);
         SharedPreferences sh = getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         userId = sh.getString("memberId", "");
+        business_CategoryId = sh.getString("business_CategoryId", "");
+        branch_id = sh.getString("branch_id", "");
+
         addEvent = findViewById(R.id.addEvent);
+        tv_be = findViewById(R.id.tv_be);
+        tv_ae = findViewById(R.id.tv_ae);
+        tv_me = findViewById(R.id.tv_me);
+
+        calendariew = findViewById(R.id.calendarView);
 
         eventTypeList.add("Tap to select");
         eventTypeIdList.add("Tap to select");
 
-new getEventType().execute();
-new getEventData().execute();
+        new getEventType().execute();
+        new getEventData().execute();
 
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-DialogAddEvent();
-
+                DialogAddEvent();
             }
         });
     }
 
     private void DialogAddEvent() {
-        Toast.makeText(CalenderActivity.this, "Add Data", Toast.LENGTH_SHORT).show();
         Dialog dialog = new Dialog(CalenderActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.add_new_event);
@@ -93,35 +121,29 @@ DialogAddEvent();
         assert window != null;
         window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
         EditText name = dialog.findViewById(R.id.aeEventName);
-
         EditText date = dialog.findViewById(R.id.aeEventDate);
-        date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(CalenderActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
+        EditText etEventEndDate = dialog.findViewById(R.id.etEventEndDate);
+        EditText etEventEndTime = dialog.findViewById(R.id.etEventEndTime);
+        EditText etEventLocation = dialog.findViewById(R.id.etEventLocation);
+        EditText etEventHost = dialog.findViewById(R.id.etEventHost);
+        EditText etEventUrl = dialog.findViewById(R.id.etEventURL);
+        EditText etEventPrice = dialog.findViewById(R.id.etEventPrice);
+        EditText etEventRating = dialog.findViewById(R.id.etEventRating);
 
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-
-                                date.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.show();
-
-            }
-        });
-
+        LinearLayout ll_event_end_date = dialog.findViewById(R.id.ll_event_end_date);
+        LinearLayout ll_event_end_time = dialog.findViewById(R.id.ll_event_end_time);
+        LinearLayout ll_location = dialog.findViewById(R.id.ll_location);
+        LinearLayout ll_host = dialog.findViewById(R.id.ll_host);
+        LinearLayout ll_url = dialog.findViewById(R.id.ll_url);
+        LinearLayout ll_desc = dialog.findViewById(R.id.ll_desc);
+        LinearLayout ll_price = dialog.findViewById(R.id.ll_price);
+        LinearLayout ll_rating = dialog.findViewById(R.id.ll_rating);
+        setDate fromDate = new setDate(date, this);
+        setDate fromEventEndDate = new setDate(etEventEndDate, this);
 
         EditText time = dialog.findViewById(R.id.aeEventTime);
+
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,12 +154,32 @@ DialogAddEvent();
                 // Launch Time Picker Dialog
                 TimePickerDialog timePickerDialog = new TimePickerDialog(CalenderActivity.this,
                         new TimePickerDialog.OnTimeSetListener() {
-
+                            @SuppressLint("SetTextI18n")
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                   int minute) {
+                                time.setText(checkDigit(hourOfDay) + ":" + checkDigit(minute) + ":" + "00");
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+        });
 
-                                time.setText(hourOfDay + ":" + minute);
+        etEventEndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar c2 = Calendar.getInstance();
+                mHour = c2.get(Calendar.HOUR_OF_DAY);
+                mMinute = c2.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(CalenderActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+                                etEventEndTime.setText(checkDigit(hourOfDay) + ":" + checkDigit(minute) + ":" + "00");
                             }
                         }, mHour, mMinute, false);
                 timePickerDialog.show();
@@ -157,12 +199,33 @@ DialogAddEvent();
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedEvent = parent.getItemAtPosition(position).toString();
-                for (int i = 0; i <eventTypeList.size() ; i++) {
-                    if (eventTypeList.get(i) == selectedEvent ){
+                if (!selectedEvent.equalsIgnoreCase("Birthday Event") && !selectedEvent.equalsIgnoreCase("Anniversary Event") &&
+                        !selectedEvent.equalsIgnoreCase("Tap to select")
+                ) {
+                    ll_event_end_date.setVisibility(View.VISIBLE);
+                    ll_event_end_time.setVisibility(View.VISIBLE);
+                    ll_location.setVisibility(View.VISIBLE);
+                    ll_host.setVisibility(View.VISIBLE);
+                    ll_url.setVisibility(View.VISIBLE);
+                    ll_price.setVisibility(View.VISIBLE);
+                    ll_rating.setVisibility(View.VISIBLE);
+                } else {
+                    ll_event_end_date.setVisibility(View.GONE);
+                    ll_event_end_time.setVisibility(View.GONE);
+                    ll_location.setVisibility(View.GONE);
+                    ll_host.setVisibility(View.GONE);
+                    ll_url.setVisibility(View.GONE);
+                    ll_price.setVisibility(View.GONE);
+                    ll_rating.setVisibility(View.GONE);
+                }
+
+                for (int i = 0; i < eventTypeList.size(); i++) {
+                    if (eventTypeList.get(i) == selectedEvent) {
                         selectedEventId = String.valueOf(i);
                     }
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -172,36 +235,45 @@ DialogAddEvent();
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 eventName =name.getText().toString();
-                 eventType = selectedEvent;
-                 date2 = date.getText().toString();
-                 time2 = time.getText().toString();
+                eventName = name.getText().toString();
+                eventType = selectedEvent;
+
+                date2 = date.getText().toString();
+                time2 = time.getText().toString();
+
+                EventEndDate = etEventEndDate.getText().toString();
+                EventEndTime = etEventEndTime.getText().toString();
+
+                event_location = etEventLocation.getText().toString();
+                event_host = etEventHost.getText().toString();
+                event_url = etEventUrl.getText().toString();
+                event_price = etEventPrice.getText().toString();
+                event_rating = etEventRating.getText().toString();
+
                 description2 = description.getText().toString();
-                if (eventName.equals("") || date2.equals("") || time2.equals("") || description2.equals("")){
 
-                    Toast.makeText(CalenderActivity.this, "Enter Details "+eventName+" "+eventType+" "+ date2 +" "+time2, Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    if (eventType.contains("Birthday")){
-                        Toast.makeText(CalenderActivity.this, "Name "+eventName+" "+eventType+" "+ date2 +" "+time2, Toast.LENGTH_SHORT).show();
 
-new addAnniversaryEvent().execute();
-                    }
-                    else if(eventType.contains("Anniversary")){
-                        Toast.makeText(CalenderActivity.this, "anni", Toast.LENGTH_SHORT).show();
+                if (eventName.equals("") || date2.equals("") || time2.equals("")) {
+                    // field missing
+                    Toast.makeText(CalenderActivity.this, "Enter Details " + eventName + " " + eventType + " " + date2 + " " + time2, Toast.LENGTH_SHORT).show();
+                } else {
+                    if (eventType.contains("Birthday Event")) {
+                        // birthday
+                        new addBirthDayEvent().execute();
+                    } else if (eventType.contains("Anniversary Event")) {
+                        // anniversary
                         new addAnniversaryEvent().execute();
+                    } else {
+                        // main event
+                        new addEvent().execute();
                     }
-
                 }
             }
         });
-
-
     }
 
 
-    public  String  getTime(){
-        // TODO Auto-generated method stub
+    public String getTime() {
         ArrayList<String> time = new ArrayList<>();
         Calendar mcurrentTime = Calendar.getInstance();
         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
@@ -210,7 +282,7 @@ new addAnniversaryEvent().execute();
         mTimePicker = new TimePickerDialog(CalenderActivity.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                time.add(""+selectedHour + ":" + selectedMinute);
+                time.add("" + selectedHour + ":" + selectedMinute);
             }
         }, hour, minute, true);
         mTimePicker.setTitle("Select Time");
@@ -225,10 +297,11 @@ new addAnniversaryEvent().execute();
         startActivity(i);
         finish();
     }
+
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent( getApplicationContext(),MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 this.finish();
                 return true;
@@ -243,16 +316,14 @@ new addAnniversaryEvent().execute();
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(CalenderActivity.this);
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/event/eventListType", ServiceHandler.GET);
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "event/eventListType", ServiceHandler.GET);
                 Log.d("meeting: ", "> " + jsonStr);
 
             } catch (final Exception e) {
@@ -272,10 +343,8 @@ new addAnniversaryEvent().execute();
         @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
-
                 if (jsonStr != null) {
                     jsonData = new JSONObject(jsonStr);
                     Log.d("ReferralReceived1", "" + jsonData.toString());
@@ -283,8 +352,7 @@ new addAnniversaryEvent().execute();
                     Log.d("profile", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
                         JSONArray userArray = jsonData.getJSONArray("message_text");
-
-                        for (int i = 0; i <userArray.length() ; i++) {
+                        for (int i = 0; i < userArray.length(); i++) {
                             JSONObject userDetail = userArray.getJSONObject(i);
                             eventTypeList.add(userDetail.getString("event_type_name"));
                             eventTypeIdList.add(userDetail.getString("event_type_id"));
@@ -302,30 +370,27 @@ new addAnniversaryEvent().execute();
         }
     }
 
-    public  class addBirthDayEvent extends AsyncTask<String, Void, String> {
+    public class addBirthDayEvent extends AsyncTask<String, Void, String> {
         private String jsonStr, responseSuccess, responseMsg;
         private JSONObject jsonData;
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(CalenderActivity.this);
                 RequestBody values = new FormBody.Builder()
-                        .add("ememberId","1")
-                        .add("bEventName",eventName.toString())
-                        .add("bEventDate",date2 +" "+time2)
-                        .add("bEventDiscription",description2)
-                        .add("user_id",userId)
+                        .add("ememberId", userId)
+                        .add("bEventName", eventName.toString())
+                        .add("bEventDate", date2 + " " + time2)
+                        .add("bEventDiscription", description2)
+                        .add("user_id", userId)
                         .build();
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/event/addBirthdayEvent", ServiceHandler.POST, values);
-
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "event/addBirthdayEvent", ServiceHandler.POST, values);
 
             } catch (final Exception e) {
                 e.printStackTrace();
@@ -343,7 +408,6 @@ new addAnniversaryEvent().execute();
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -351,15 +415,12 @@ new addAnniversaryEvent().execute();
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
                     Log.d("great Bhet", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
-                      String  responseSuccess2 = String.valueOf(jsonData.getInt("message_text"));
-
-                        Log.d("great Bhet", "" + responseSuccess2);
-
+                        responseMsg = jsonData.getString("message_text");
+                        Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
                     } else {
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
                     }
-                } else {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -369,31 +430,27 @@ new addAnniversaryEvent().execute();
     }
 
 
-
-    public  class addAnniversaryEvent extends AsyncTask<String, Void, String> {
+    public class addAnniversaryEvent extends AsyncTask<String, Void, String> {
         private String jsonStr, responseSuccess, responseMsg;
         private JSONObject jsonData;
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(CalenderActivity.this);
                 RequestBody values = new FormBody.Builder()
-                        .add("ememberId",userId)
-                        .add("bEventName",eventName)
-                        .add("bEventDate",date2 +" "+time2)
-                        .add("bEventDiscription",description2)
-                        .add("user_id",userId)
+                        .add("ememberId", userId)
+                        .add("aEventName", eventName)
+                        .add("aEventDate", date2 + " " + time2)
+                        .add("aEventDiscription", description2)
+                        .add("user_id", userId)
                         .build();
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/event/addAnniversaryEvent", ServiceHandler.POST, values);
-
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "event/addAnniversaryEvent", ServiceHandler.POST, values);
 
             } catch (final Exception e) {
                 e.printStackTrace();
@@ -411,7 +468,6 @@ new addAnniversaryEvent().execute();
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -419,13 +475,11 @@ new addAnniversaryEvent().execute();
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
                     Log.d("great Bhet", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
-                        String  responseSuccess2 = String.valueOf(jsonData.getInt("message_text"));
-                        Log.d("great Bhet", "" + responseSuccess2);
-                    } else {
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
+                    } else {
+                        Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
                     }
-                } else {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -435,26 +489,118 @@ new addAnniversaryEvent().execute();
     }
 
 
-    public  class getEventData extends AsyncTask<String, Void, String> {
+    public class getEventData extends AsyncTask<String, Void, String> {
         private String jsonStr, responseSuccess, responseMsg;
         private JSONObject jsonData;
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(CalenderActivity.this);
                 RequestBody values = new FormBody.Builder()
-                        .add("member_id",userId)
+                        .add("member_id", userId)
                         .build();
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/event/ownEventMamber", ServiceHandler.POST, values);
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "event/ownEventMamber", ServiceHandler.POST, values);
 
+
+            } catch (final Exception e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showDialog(CalenderActivity.this, e.toString(), false, false);
+                    }
+                });
+                // workerThread();
+            }
+            return jsonStr;
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onPostExecute(String jsonStr) {
+            super.onPostExecute(jsonStr);
+            try {
+                if (jsonStr != null) {
+                    jsonData = new JSONObject(jsonStr);
+                    responseSuccess = String.valueOf(jsonData.getInt("message_code"));
+                    Log.d("great Bhet", "" + responseSuccess);
+                    if (responseSuccess.equals("1000")) {
+                        JSONArray userArray = jsonData.getJSONArray("message_text");
+                        Log.d("EventId", userArray.toString());
+                        JSONObject jsonObject = userArray.getJSONObject(0);
+                        String event_id = jsonObject.getString("member_event_id");
+                        Log.d("EventId", event_id.toString());
+
+                        birthday_event_count = 0;
+                        anniversary_even_count = 0;
+                        my_event_count = 0;
+
+                        for (int i = 0; i < userArray.length(); i++) {
+                            JSONObject jsonObject2 = userArray.getJSONObject(i);
+                            Timestamp ts = new Timestamp(Integer.valueOf(jsonObject2.getString("event_date_and_time")));
+                            Date date = new Date(ts.getTime());
+                            if (jsonObject2.getString("event_type_id").equals("3")) {
+                                birthday_event_count = birthday_event_count + 1;
+                            } else if (jsonObject2.getString("event_type_id").equals("4")) {
+                                anniversary_even_count = anniversary_even_count + 1;
+                            } else if (jsonObject2.getString("event_type_id").equals("1")) {
+                                my_event_count = my_event_count + 1;
+                            }
+                        }
+
+                        tv_be.setText("Birthday Event(" + birthday_event_count + ")");
+                        tv_ae.setText("Anniversary Event(" + anniversary_even_count + ")");
+                        tv_me.setText("My Event(" + my_event_count + ")");
+
+
+                    } else {
+                        responseMsg = jsonData.getString("message_text");
+                        Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("TAG", "onPostExecute: " + e.toString());
+                Toast.makeText(CalenderActivity.this, "Something went wrong please Retry!!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    public class addEvent extends AsyncTask<String, Void, String> {
+        private String jsonStr, responseSuccess, responseMsg;
+        private JSONObject jsonData;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... args) {
+            try {
+                ServiceHandler shh = new ServiceHandler(CalenderActivity.this);
+                RequestBody values = new FormBody.Builder()
+                        .add("eName", eventName)
+                        .add("eStartTime", date2 + " " + time2)
+                        .add("eEndTime", EventEndDate + " " + EventEndTime)
+                        .add("eDescription", description2)
+                        .add("eCategoryId", business_CategoryId)
+                        .add("eBranchId", branch_id)
+                        .add("eLocation", event_location)
+                        .add("eHost", event_host)
+                        .add("eURL", event_url)
+                        .add("ePrice", event_price)
+                        .add("eRating", event_rating)
+                        .add("eType", selectedEventId)
+                        .build();
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "event/eventAdd", ServiceHandler.POST, values);
 
             } catch (final Exception e) {
                 e.printStackTrace();
@@ -471,7 +617,6 @@ new addAnniversaryEvent().execute();
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -479,16 +624,18 @@ new addAnniversaryEvent().execute();
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
                     Log.d("great Bhet", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
-                      JSONArray userArray = jsonData.getJSONArray("message_text");
-                        Log.d("EventId",userArray.toString());
-                      JSONObject jsonObject = userArray.getJSONObject(0);
-                      String event_id = jsonObject.getString("member_event_id");
-                      Log.d("EventId",event_id.toString());
+                        //JSONArray userArray = jsonData.getJSONArray("message_text");
+                        responseMsg = jsonData.getString("message_text");
+                        Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
+
+                        //  Log.d("EventId", userArray.toString());
+                        //  JSONObject jsonObject = userArray.getJSONObject(0);
+                        // String event_id = jsonObject.getString("member_event_id");
+                        //Log.d("EventId", event_id.toString());
                     } else {
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
                     }
-                } else {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -498,30 +645,47 @@ new addAnniversaryEvent().execute();
     }
 
 
-    public  class addEvent extends AsyncTask<String, Void, String> {
+    public void addMemberEvent() {
+        String url = Constant.BASE_URL + "event/eventMemberAdd";
+
+        /*
+        * Params
+        *
+        * eName
+        ememberId
+        eStartTime
+        eEndTime
+        eCategoryId
+        eLocation
+        eHost
+        eURL
+        *
+        * */
+    }
+
+    /*public class addEvent extends AsyncTask<String, Void, String> {
         private String jsonStr, responseSuccess, responseMsg;
         private JSONObject jsonData;
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
+
             try {
                 ServiceHandler shh = new ServiceHandler(CalenderActivity.this);
                 RequestBody values = new FormBody.Builder()
-                        .add("eName",userId)
-                        .add("ememberId",userId)
-                        .add("eStartTime","")
-                        .add("eEndTime","")
-                        .add("eCategoryId","")
-                        .add("eLocation","")
-                        .add("eHost","RMB")
-                        .add("eURL",userId)
+                        .add("eName", eventName)
+                        .add("ememberId", userId)
+                        .add("eStartTime", date2 + " " + time2)
+                        .add("eEndTime", EventEndDate + " " + EventEndTime)
+                        .add("eCategoryId", business_CategoryId)
+                        .add("eLocation", event_location)
+                        .add("eHost", event_host)
+                        .add("eURL", event_url)
                         .build();
                 jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/event/eventMemberAdd", ServiceHandler.POST, values);
 
@@ -541,7 +705,6 @@ new addAnniversaryEvent().execute();
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -549,22 +712,27 @@ new addAnniversaryEvent().execute();
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
                     Log.d("great Bhet", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
-                        JSONArray userArray = jsonData.getJSONArray("message_text");
-                        Log.d("EventId",userArray.toString());
-                        JSONObject jsonObject = userArray.getJSONObject(0);
-                        String event_id = jsonObject.getString("member_event_id");
-                        Log.d("EventId",event_id.toString());
+                        //JSONArray userArray = jsonData.getJSONArray("message_text");
+                        responseMsg = jsonData.getString("message_text");
+                        Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
+
+                        //  Log.d("EventId", userArray.toString());
+                        //  JSONObject jsonObject = userArray.getJSONObject(0);
+                        // String event_id = jsonObject.getString("member_event_id");
+                        //Log.d("EventId", event_id.toString());
                     } else {
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
                     }
-                } else {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(CalenderActivity.this, "Something went wrong please Retry!!!", Toast.LENGTH_SHORT).show();
             }
         }
-    }
+    }*/
 
+    public String checkDigit(int number) {
+        return number <= 9 ? "0" + number : String.valueOf(number);
+    }
 }

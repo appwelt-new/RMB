@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.Constraints xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.features.CalenderActivity"
-    android:orientation="vertical"
+    android:layout_margin="10dp"
     android:gravity="center_horizontal"
-    android:layout_margin="10dp">
+    android:orientation="vertical"
+    tools:context=".activity.features.CalenderActivity">
 
     <TextView
         android:id="@+id/date_view"
@@ -34,4 +34,63 @@
         android:textSize="15sp"
         android:textStyle="bold" />
 
-</androidx.constraintlayout.widget.Constraints>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_be"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/round_border_blue"
+                android:gravity="center"
+                android:text="Birthday Event(0)"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/tv_ae"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_ae"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/round_border_blue"
+                android:gravity="center"
+                android:text="Anniversary Event(0)"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_be"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/tv_me"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/round_border_blue"
+                android:gravity="center"
+                android:text="My Event(0)"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_be" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+</LinearLayout>

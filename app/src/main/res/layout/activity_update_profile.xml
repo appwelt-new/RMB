@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.features.UpdateProfile">
+
+    <LinearLayout
+        android:id="@+id/layout3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="right"
+                    android:scaleType="fitXY"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/title"
+                    android:layout_width="300dp"
+                    android:layout_height="250dp"
+                    android:layout_below="@+id/design"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/rotaryloginbg"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:text=" Rotary Means Business Fellowship "
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:text="  Don't Have an account? Create your account, it takes less than a minute"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="10dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profileImageView"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_baseline_account_circle"
+                        app:civ_border_color="@color/NavyBlue"
+                        app:civ_border_width="5dp"
+                        app:civ_circle_background_color="@color/NavyBlue" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/chooseImg"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignEnd="@id/profileImageView"
+                        android:layout_alignBottom="@id/profileImageView"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/pink_bg"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_baseline_photo_camera_24" />
+                </RelativeLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Member Id" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/txtMemberId"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:enabled="false"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="First Name" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etFirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:hint="First Name"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Last Name" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etLastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:hint="Last Name"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Rotary Club" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etRotaryClub"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:enabled="false"
+                    android:hint="Rotary Club"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Business Name" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etBusinessName"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:hint="Business Name"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Mobile Number" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etMobileNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:enabled="false"
+                    android:hint="Mobile Number"
+                    android:inputType="numberDecimal"
+                    android:maxLength="10"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Business Mobile Number" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etBusinessMobileNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:enabled="false"
+                    android:hint="Business Mobile Number"
+                    android:inputType="numberDecimal"
+                    android:maxLength="10"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Email" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:hint="Email"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Business Email" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etBusinessEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:enabled="false"
+                    android:hint="Business Email"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Business Website" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etBusinessWebsite"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:enabled="false"
+                    android:hint="Business Website"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Business Categoty" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etBusinessCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:enabled="false"
+                    android:hint="Business Website"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Business Sub Categoty" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etBusinessSubCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:enabled="false"
+                    android:hint="Business Website"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="LinkedIn Profile" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etLinkedIn"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bgSolid"
+                    android:enabled="false"
+                    android:hint="LinkedIn Profile"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Edittext4" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/iglogo" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/icons8_facebook" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/web_broswer"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:padding="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/icons8_google" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/icons8_twitter_circled" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/iv_linkedin"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/linkedin" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/btn_update"
+                    android:layout_width="200dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/round_border_blue"
+                    android:gravity="center"
+                    android:text="    Update    "
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+
+</LinearLayout>

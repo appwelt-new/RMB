@@ -487,13 +487,11 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
 
                 ServiceHandler shh = new ServiceHandler(IAmInterestedActivity.this);
@@ -530,7 +528,6 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -563,13 +560,11 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(IAmInterestedActivity.this);
                 jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/business/listcategories", ServiceHandler.GET);
@@ -583,7 +578,6 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -617,13 +611,11 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(IAmInterestedActivity.this);
                 RequestBody values = new FormBody.Builder()
@@ -641,7 +633,6 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -678,13 +669,11 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(IAmInterestedActivity.this);
                 jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/liststates", ServiceHandler.GET);
@@ -698,7 +687,6 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -731,13 +719,11 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(IAmInterestedActivity.this);
                 jsonStr = shh.makeServiceCall("https://www.hbcbiz.in/apiV1/business/listcategories", ServiceHandler.GET);
@@ -752,7 +738,6 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -785,13 +770,11 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(IAmInterestedActivity.this);
                 jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/listbranches", ServiceHandler.GET);
@@ -806,7 +789,6 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {

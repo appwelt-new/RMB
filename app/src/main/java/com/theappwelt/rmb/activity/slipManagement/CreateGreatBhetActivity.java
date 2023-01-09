@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.theappwelt.rmb.JavaClasses.setDate;
 import com.theappwelt.rmb.R;
+import com.theappwelt.rmb.utilities.Constant;
 import com.theappwelt.rmb.utilities.ServiceHandler;
 import com.theappwelt.rmb.utilities.Utils;
 
@@ -471,20 +472,18 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(CreateGreatBhetActivity.this);
 
                 RequestBody values = new FormBody.Builder()
                         .add("member_id", userId)
                         .build();
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/slip/crossBranchMemberList", ServiceHandler.POST, values);
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "slip/crossBranchMemberList", ServiceHandler.POST, values);
                 Log.d("greatBhetMember55  ", "> " + jsonStr);
 
             } catch (final Exception e) {
@@ -497,7 +496,6 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -532,17 +530,15 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(CreateGreatBhetActivity.this);
 
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/listbranches", ServiceHandler.GET);
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "listbranches", ServiceHandler.GET);
 
             } catch (final Exception e) {
                 e.printStackTrace();
@@ -560,7 +556,6 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {
@@ -594,13 +589,11 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             Log.i("TAG", "doInBackground: ");
             try {
 
@@ -623,7 +616,7 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
                         .add("user_id", userId)
                         .build();
 
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/slip/addSlip", ServiceHandler.POST, values);
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "slip/addSlip", ServiceHandler.POST, values);
             } catch (final Exception e) {
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {
@@ -642,7 +635,6 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             Log.i("TAG", "onPostExecute: " + jsonStr.toString());
             try {
@@ -682,13 +674,11 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(CreateGreatBhetActivity.this);
                 RequestBody values = new FormBody.Builder()
@@ -699,7 +689,7 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
                         .add("eStartTime", "" + startDate.getText().toString().trim() + " , " + startTime.getText().toString().trim())
                         .add("user_id", userId)
                         .build();
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/slip/addSlip", ServiceHandler.POST, values);
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "slip/addSlip", ServiceHandler.POST, values);
                 //   Toast.makeText(CreateGreatBhetActivity.this, "!!New Great Bhet Slip Added Successfully!!", Toast.LENGTH_LONG).show();
 
 
@@ -719,7 +709,6 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
                 if (jsonStr != null) {

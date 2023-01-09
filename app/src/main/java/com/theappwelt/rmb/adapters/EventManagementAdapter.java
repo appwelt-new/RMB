@@ -18,15 +18,18 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.theappwelt.rmb.R;
+import com.theappwelt.rmb.activity.features.EventManagementActivity;
+import com.theappwelt.rmb.model.EventList;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventManagementAdapter extends RecyclerView.Adapter<EventManagementAdapter.ViewHolder> {
     Context context;
-    ArrayList<String> name ;
-    ArrayList<String> date ;
-    ArrayList<String> location ;
-    ArrayList<String> host ;
+    ArrayList<String> name;
+    ArrayList<String> date;
+    ArrayList<String> location;
+    ArrayList<String> host;
 
     public EventManagementAdapter(Context context, ArrayList<String> name, ArrayList<String> date, ArrayList<String> location, ArrayList<String> host) {
         this.context = context;
@@ -36,7 +39,12 @@ public class EventManagementAdapter extends RecyclerView.Adapter<EventManagement
         this.host = host;
     }
 
+    List<EventList.MessageText> messageText = new ArrayList<>();
 
+    public EventManagementAdapter(EventManagementActivity context, List<EventList.MessageText> messageText) {
+        this.context = context;
+        this.messageText = messageText;
+    }
 
 
     @NonNull
@@ -44,7 +52,7 @@ public class EventManagementAdapter extends RecyclerView.Adapter<EventManagement
     public EventManagementAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view= layoutInflater.inflate(R.layout.event_management, parent, false);
+        View view = layoutInflater.inflate(R.layout.event_management, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -52,10 +60,12 @@ public class EventManagementAdapter extends RecyclerView.Adapter<EventManagement
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull EventManagementAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.name.setText(" "+name.get(position));
-        holder.date.setText(""+date.get(position));
-        holder.location.setText("" +location.get(position));
-        holder.host.setText(""+host.get(position));
+        holder.setIsRecyclable(false);
+        EventList.MessageText data = messageText.get(position);
+        holder.name.setText(data.getEventName());
+        holder.date.setText(data.getEventDateAndTime());
+        holder.location.setText(data.getEventLocation());
+        holder.host.setText(data.getEventHost());
         holder.editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,18 +92,18 @@ public class EventManagementAdapter extends RecyclerView.Adapter<EventManagement
         TextView update = dialog.findViewById(R.id.updateVisitor);
         dialog.show();
 
-
-
     }
 
     @Override
     public int getItemCount() {
-        return name.size();
+        return messageText.size();
     }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name,date,location,host;
+        TextView name, date, location, host;
         CardView editEvent;
+
         public ViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.emName);

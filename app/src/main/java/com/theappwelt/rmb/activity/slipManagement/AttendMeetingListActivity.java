@@ -19,6 +19,7 @@ import com.theappwelt.rmb.R;
 import com.theappwelt.rmb.adapters.MeetingAttendListAdapter;
 import com.theappwelt.rmb.model.MeetingAttendList;
 import com.theappwelt.rmb.model.ViewIntMemberListModel;
+import com.theappwelt.rmb.utilities.Constant;
 import com.theappwelt.rmb.utilities.ServiceHandler;
 import com.theappwelt.rmb.utilities.Utils;
 
@@ -92,7 +93,7 @@ public class AttendMeetingListActivity extends AppCompatActivity {
                         .add("meeting_id", meeting_id)
                         .add("member_id", "" + userid)
                         .build();
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/summary/display_attending_meeting_member", ServiceHandler.POST, values);
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL+"summary/display_attending_meeting_member", ServiceHandler.POST, values);
                 Log.d("ViewIntrMembersActivity", "> " + jsonStr);
 
             } catch (final Exception e) {

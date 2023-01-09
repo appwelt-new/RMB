@@ -16,6 +16,18 @@
         android:theme="@style/Theme.HBC"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activity.features.UpdateProfile"
+            android:exported="true">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+           <!-- <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity
             android:name=".activity.auth.OtpVerifyActivity"
             android:exported="false">
             <meta-data
@@ -208,8 +220,8 @@
             android:exported="false" />
         <activity
             android:name=".activity.features.SplashScreen"
-            android:theme="@style/splashScreenTheme"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/splashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

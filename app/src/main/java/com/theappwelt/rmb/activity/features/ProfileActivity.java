@@ -13,8 +13,6 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +21,7 @@ import android.widget.TextView;
 
 
 import com.theappwelt.rmb.R;
+import com.theappwelt.rmb.utilities.Constant;
 import com.theappwelt.rmb.utilities.ServiceHandler;
 import com.theappwelt.rmb.utilities.Utils;
 import com.squareup.picasso.Picasso;
@@ -140,20 +139,18 @@ public class ProfileActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(ProfileActivity.this);
 
                 RequestBody values = new FormBody.Builder()
                         .add("memberId", userid)
                         .build();
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/member/getinfo", ServiceHandler.POST, values);
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "member/getinfo", ServiceHandler.POST, values);
                 Log.d("meeting: ", "> " + jsonStr);
 
             } catch (final Exception e) {
@@ -173,7 +170,6 @@ public class ProfileActivity extends AppCompatActivity {
         @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
             super.onPostExecute(jsonStr);
             try {
 
@@ -230,22 +226,16 @@ public class ProfileActivity extends AppCompatActivity {
                         businessName.setText("Business Name : " + businessDetails.getString("business_Name"));
                         businessCategory.setText("Business Category : " + businessDetails.getString("Category_Name"));
                         businessSubCategory.setText("SubCategory : " + businessDetails.getString("Subcategory_Name"));
-
                     }
-
                 } else {
                     responseMsg = jsonData.getString("message_text");
                     Utils.showDialog(ProfileActivity.this, responseMsg, false, false);
                 }
             } catch (JSONException jsonException) {
                 jsonException.printStackTrace();
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
-
     }
-
 }

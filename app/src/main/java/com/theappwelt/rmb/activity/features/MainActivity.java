@@ -5,10 +5,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -80,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         ViewInviteToVisitor = findViewById(R.id.InviteToVisitorLayout);
         inviteByVisitorLayout = findViewById(R.id.inviteByVisitorLayout);
 
-        new getEventCount().execute();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -139,7 +136,11 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(i);
                     finish();
                 } else if (id == R.id.nav_9) {
-                    Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+                    Intent i = new Intent(getApplicationContext(), EventManagementActivity.class);
+                    startActivity(i);
+                    finish();
+                } else if (id == R.id.nav_10) {
+                    Intent i = new Intent(getApplicationContext(), UpdateProfile.class);
                     startActivity(i);
                     finish();
                 } else if (id == R.id.nav_logout) {
@@ -154,80 +155,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    public class getEventCount extends AsyncTask<String, Void, String> {
-
-        private String jsonStr, responseSuccess, responseMsg;
-        private JSONObject jsonData;
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
-            try {
-                ServiceHandler shh = new ServiceHandler(MainActivity.this);
-
-                RequestBody values = new FormBody.Builder()
-                        .add("member_id", userId)
-                        .build();
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/dashboard/memberCount", ServiceHandler.POST, values);
-                Log.d("meeting: ", "> " + jsonStr);
-
-            } catch (final Exception e) {
-                e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showDialog(MainActivity.this, e.toString(), false, false);
-                    }
-                });
-                // workerThread();
-                Log.e("ServiceHandler", e.toString());
-            }
-            return jsonStr;
-        }
-
-        @Override
-        protected void onPostExecute(String jsonStr) {
-            // TODO Auto-generated method stub
-            super.onPostExecute(jsonStr);
-            try {
-
-                if (jsonStr != null) {
-                    jsonData = new JSONObject(jsonStr);
-                    Log.d("ReferralReceived1", "" + jsonData.toString());
-                    responseSuccess = String.valueOf(jsonData.getInt("message_code"));
-                    Log.d("Referral2", "" + responseSuccess);
-                    if (responseSuccess.equals("1000")) {
-                        JSONObject userDetail = jsonData.getJSONObject("message_text");
-                        FragmentDashboard.monthEvent.setText(userDetail.getJSONObject("Total_hbc_month_event_count").getString("month_event_count"));
-                        FragmentDashboard.monthMeetings.setText(userDetail.getJSONObject("Total_one_to_one_month_meeting_count").getString("month_meeting_count"));
-                        FragmentDashboard.weekEvents.setText(userDetail.getJSONObject("Total_hbc_week_event_count").getString("week_event_count"));
-                        FragmentDashboard.weekMeetings.setText(userDetail.getJSONObject("Total_hbc_week_event_count").getString("week_event_count"));
-                        FragmentDashboard.greatBhet.setText(userDetail.getJSONObject("Total_invite_to_member_count").getString("invite_to_one_to_one_count"));
-                        FragmentDashboard.greatBhetInvites.setText(userDetail.getJSONObject("Total_invite_by_member_count").getString("invite_by_one_to_one_count"));
-                        FragmentDashboard.inviteToReferral.setText(userDetail.getJSONObject("Total_invite_to_referral_count").getString("invite_to_referral_slips_count"));
-                        FragmentDashboard.inviteByReferral.setText(userDetail.getJSONObject("Total_invite_by_referral_count").getString("invite_by_referral_slips_count"));
-                        FragmentDashboard.inviteToVisitor.setText(userDetail.getJSONObject("Total_invite_by_visitor_count").getString("invite_by_visitor_member_count"));
-                        FragmentDashboard.inviteByVisitor.setText(userDetail.getJSONObject("Total_invite_by_visitor_count").getString("invite_by_visitor_member_count"));
-                        FragmentDashboard.branchMembers.setText(userDetail.getJSONObject("Total_own_branch_member_count").getString("own_branch_member_count"));
-                        Log.d("Referral2", "" + userDetail.getJSONObject("Total_invite_to_referral_count").getString("invite_to_referral_slips_count"));
-                    } else {
-                        responseMsg = jsonData.getString("message_text");
-                        Utils.showDialog(MainActivity.this, responseMsg, false, false);
-                    }
-                } else {
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
     }
 }

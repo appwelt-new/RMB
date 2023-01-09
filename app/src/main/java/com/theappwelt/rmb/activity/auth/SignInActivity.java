@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.theappwelt.rmb.R;
 import com.theappwelt.rmb.activity.features.MainActivity;
+import com.theappwelt.rmb.utilities.Constant;
 import com.theappwelt.rmb.utilities.ServiceHandler;
 import com.theappwelt.rmb.utilities.Utils;
 
@@ -178,7 +179,7 @@ public class SignInActivity extends AppCompatActivity {
                         .add("member_id", memberId)
                         .build();
 
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/member/check_subscription", ServiceHandler.POST, values);
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "member/check_subscription", ServiceHandler.POST, values);
 
             } catch (final Exception e) {
                 e.printStackTrace();
