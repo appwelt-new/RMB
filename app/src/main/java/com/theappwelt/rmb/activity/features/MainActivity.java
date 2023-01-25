@@ -20,7 +20,6 @@ import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.theappwelt.rmb.Fragments.FragmentDashboard;
 import com.theappwelt.rmb.R;
 import com.theappwelt.rmb.activity.Documents.MyDocumentsActivity;
 import com.theappwelt.rmb.activity.Visitor.VisitorsActivity;
@@ -29,18 +28,13 @@ import com.theappwelt.rmb.activity.businessCounter.BusinessCounterActivity;
 import com.theappwelt.rmb.activity.request.MyRequestListActivity;
 import com.theappwelt.rmb.activity.slipManagement.SlipmanagementActivity;
 import com.theappwelt.rmb.model.EventCountModel;
-import com.theappwelt.rmb.utilities.ServiceHandler;
-import com.theappwelt.rmb.utilities.Utils;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.FormBody;
-import okhttp3.RequestBody;
 
 public class MainActivity extends AppCompatActivity {
 

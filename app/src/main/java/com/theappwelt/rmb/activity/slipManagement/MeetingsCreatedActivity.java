@@ -211,17 +211,6 @@ public class MeetingsCreatedActivity extends AppCompatActivity {
     }
 
     private void DialogAddSummary(MeetingCreatedListModel m) {
-        //  MeetingCreatedListModel r = list.get(p);
-
-        /*
-        *
-        * et_bussiness_done
-et_no_of_rotarian_member
-et_no_of_nonrotarian_member
-et_no_of_member_attended
-et_reference_given
-        *
-        * */
 
         Dialog dialog = new Dialog(MeetingsCreatedActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

@@ -23,10 +23,9 @@ allprojects {
 
         google()  // Google's Maven repository
         mavenCentral()  // Maven Central repository
+        jcenter()
     }
 }
-
-
 
 
 task clean(type: Delete) {

@@ -37,6 +37,15 @@
         <item>Medium</item>
         <item>Not-Urgent</item>
     </array>
+
+
+    <array name="select_role" >
+        <item>Tab to select</item>
+        <item>Admin</item>
+        <item>Member</item>
+        <item>Visitor</item>
+        <item>Interested</item>
+    </array>
     <string name="title_activity_show_website">ShowWebsiteActivity</string>
     <string name="already_paid"><u>Already paid</u></string>
 </resources>

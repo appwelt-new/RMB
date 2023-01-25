@@ -25,6 +25,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,11 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
     int selectedState = 0;
     Dialog dialog;
     Dialog dialog2;
+    Spinner spinnerRole;
+    String role_name = "";
+    String role_id = "4";
+    ArrayList<String> sp_name = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +99,14 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
         selectImage = findViewById(R.id.btimage);
         panCardImg = findViewById(R.id.panCardImg);
         termsAndCondition = findViewById(R.id.cbTermsCondition);
+        spinnerRole = findViewById(R.id.spinnerRole);
+
+        sp_name.add("Tap to select");
+        sp_name.add("Interested");
+        sp_name.add("Admin");
+        sp_name.add("Member");
+        sp_name.add("Visitor");
+
         new getState().execute();
         new getCategory().execute();
         new getSelectBranch().execute();
@@ -104,6 +118,11 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
         selectSubCategory = (TextView) findViewById(R.id.spinnerSubCategory);
 
         selectBranch = (TextView) findViewById(R.id.spinnerBranch);
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(IAmInterestedActivity.this,
+                android.R.layout.simple_spinner_item, sp_name);
+        arrayAdapter.setDropDownViewResource(R.layout.spinner_list);
+        spinnerRole.setAdapter(arrayAdapter);
 
         selectState = (TextView) findViewById(R.id.spinnerState);
         selectCategory.setOnClickListener(new View.OnClickListener() {
@@ -138,11 +157,8 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                         selectCategory.setText(adapter.getItem(position));
-
                         selectedCategory = position;
-
                         dialog.dismiss();
                     }
                 });
@@ -203,6 +219,30 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
                         dialog.dismiss();
                     }
                 });
+            }
+        });
+
+
+        // role
+
+        spinnerRole.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                role_name = adapterView.getItemAtPosition(i).toString();
+                if (role_name.equalsIgnoreCase("Admin")) {
+                    role_id = "1";
+                } else if (role_name.equalsIgnoreCase("Member")) {
+                    role_id = "2";
+                } else if (role_name.equalsIgnoreCase("Visitor")) {
+                    role_id = "3";
+                } else if (role_name.equalsIgnoreCase("Interested")) {
+                    role_id = "4";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -390,7 +430,14 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
                     Log.d("IAmInterestedActivity7", "AA " + stateList.get(i));
                 }
             }
-            new addNewMember().execute();
+
+            if (role_name.isEmpty()) {
+                Toast.makeText(this, "please select role", Toast.LENGTH_SHORT).show();
+            } else if (role_name.equalsIgnoreCase("Tap to select")) {
+                Toast.makeText(this, "please select role", Toast.LENGTH_SHORT).show();
+            } else {
+                new addNewMember().execute();
+            }
 
         }
     }
@@ -514,7 +561,7 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
                         .add("uPincode", pinCode.getText().toString())
                         .add("uPancard", panCardNum.getText().toString())
                         .add("uPancardProofimg", "")
-                        .add("role", "4")
+                        .add("role", role_id)
                         .build();
                 jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/member/tmpMemberregitser", ServiceHandler.POST, values);
 
@@ -532,6 +579,7 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
             try {
                 if (jsonStr != null) {
                     jsonData = new JSONObject(jsonStr);
+                    Log.i("TAG", "onPostExecute: "+jsonData);
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
                     Utils.showDialog(IAmInterestedActivity.this, jsonData.getString("message_text"), false, false);
                     Log.d("IAmInterestedActivity2", "AA " + responseSuccess + "    " + jsonData.toString() + "  id " + categoryIdList.get(selectedCategory));
@@ -547,7 +595,6 @@ public class IAmInterestedActivity extends AppCompatActivity implements AdapterV
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-
                 Toast.makeText(IAmInterestedActivity.this, "Something went wrong please Retry!!!", Toast.LENGTH_SHORT).show();
             }
         }

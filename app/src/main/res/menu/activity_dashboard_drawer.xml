@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/nav_10"
+        android:icon="@drawable/account"
+        android:title="Profile" />
+    
+    <item
         android:id="@+id/nav_1"
         android:icon="@drawable/ic_baseline_dashboard_24"
         android:title=" Dashboard " />
@@ -47,10 +52,7 @@
         android:icon="@drawable/ic_baseline_note_alt_24"
         android:title="My Requests" />
 
-    <item
-        android:id="@+id/nav_10"
-        android:icon="@drawable/account"
-        android:title="Profile" />
+
     <item
         android:id="@+id/nav_logout"
         android:icon="@drawable/ic_baseline_logout_24"

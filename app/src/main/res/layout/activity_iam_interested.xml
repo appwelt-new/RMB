@@ -145,6 +145,30 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/filledBusinessName"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/Edittext2"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/round_border_black"
+                    android:hint="Business Name*"
+                    android:padding="1dp"
+                    android:textColorHint="@color/NavyBlue"
+                    app:hintTextColor="@color/NavyBlue">
+
+                    <!--this is the actual edit text which takes the input-->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtBusinessName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/bgSolid"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/Edittext" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/filledTextMobileNumberBusiness"
@@ -426,30 +450,32 @@
                         android:textSize="@dimen/Edittext" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/filledBusinessName"
+
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/Edittext2"
-                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginBottom="5dp"
                     android:background="@drawable/round_border_black"
-                    android:hint="Business Name*"
-                    android:padding="1dp"
-                    android:textColorHint="@color/NavyBlue"
-                    app:hintTextColor="@color/NavyBlue">
+                    android:orientation="vertical">
 
-                    <!--this is the actual edit text which takes the input-->
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/txtBusinessName"
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/bgSolid"
-                        android:text=""
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/Edittext" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_margin="2dp"
+                        android:text=" Role*"
+                        android:textColor="@color/NavyBlue"
+                        android:textSize="15dp" />
+
+                    <Spinner
+                        android:id="@+id/spinnerRole"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_margin="2dp"
+                        android:visibility="visible" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -466,7 +492,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="2dp"
-                        android:text="Select Category*"
+                        android:text=" Select Category*"
                         android:textColor="@color/NavyBlue"
                         android:textSize="15dp" />
 
@@ -507,7 +533,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="2dp"
-                        android:text="Select Sub Category*"
+                        android:text=" Select Sub Category*"
                         android:textColor="@color/NavyBlue"
                         android:textSize="15dp" />
 
@@ -548,7 +574,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="2dp"
-                        android:text="Prefer Your Club*"
+                        android:text=" Prefer Your Club*"
                         android:textColor="@color/NavyBlue"
                         android:textSize="15dp" />
 

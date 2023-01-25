@@ -4,8 +4,11 @@ package com.theappwelt.rmb.activity.features;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -15,13 +18,13 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -29,8 +32,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.applandeo.materialcalendarview.CalendarView;
+import com.applandeo.materialcalendarview.EventDay;
+import com.google.gson.Gson;
 import com.theappwelt.rmb.JavaClasses.setDate;
 import com.theappwelt.rmb.R;
+import com.theappwelt.rmb.adapters.EventAdapter;
+import com.theappwelt.rmb.adapters.EventManagementAdapter;
+import com.theappwelt.rmb.model.OwnEventList;
 import com.theappwelt.rmb.utilities.Constant;
 import com.theappwelt.rmb.utilities.ServiceHandler;
 import com.theappwelt.rmb.utilities.Utils;
@@ -40,9 +49,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
@@ -68,6 +81,7 @@ public class CalenderActivity extends AppCompatActivity {
     String event_rating = "";
     String business_CategoryId = "";
     String branch_id = "";
+    String user_role = "";
     private int mYear, mMonth, mDay, mHour, mMinute;
     TextView tv_be, tv_ae, tv_me;
 
@@ -77,7 +91,16 @@ public class CalenderActivity extends AppCompatActivity {
     int my_event_count = 0;
 
     //calender view
-    CalendarView calendariew;
+    CalendarView calenderStaff;
+    RecyclerView rv_event;
+    private List<EventDay> events = new ArrayList<>();
+
+    Activity activity;
+
+    List<OwnEventList.MessageText> mBirthdayEvent = new ArrayList<>();
+    List<OwnEventList.MessageText> mAnniversaryEvent = new ArrayList<>();
+    List<OwnEventList.MessageText> mMyEvent = new ArrayList<>();
+    EventAdapter eventAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,28 +109,62 @@ public class CalenderActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(" Calender ");
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        activity = CalenderActivity.this;
         SharedPreferences sh = getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         userId = sh.getString("memberId", "");
         business_CategoryId = sh.getString("business_CategoryId", "");
         branch_id = sh.getString("branch_id", "");
+        user_role = sh.getString("user_role", "");
 
+        rv_event = findViewById(R.id.rv_event);
         addEvent = findViewById(R.id.addEvent);
         tv_be = findViewById(R.id.tv_be);
         tv_ae = findViewById(R.id.tv_ae);
         tv_me = findViewById(R.id.tv_me);
 
-        calendariew = findViewById(R.id.calendarView);
+        calenderStaff = findViewById(R.id.calenderStaff);
 
         eventTypeList.add("Tap to select");
         eventTypeIdList.add("Tap to select");
+        events = new ArrayList<>();
 
         new getEventType().execute();
         new getEventData().execute();
+
+        Log.i("user_role", "onCreate: "+user_role);
 
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DialogAddEvent();
+            }
+        });
+
+        rv_event.setLayoutManager(new LinearLayoutManager(CalenderActivity.this));
+        eventAdapter = new EventAdapter(mBirthdayEvent);
+        rv_event.setAdapter(eventAdapter);
+        tv_be.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rv_event.setLayoutManager(new LinearLayoutManager(CalenderActivity.this));
+                eventAdapter = new EventAdapter(mBirthdayEvent);
+                rv_event.setAdapter(eventAdapter);
+            }
+        });
+        tv_ae.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rv_event.setLayoutManager(new LinearLayoutManager(CalenderActivity.this));
+                eventAdapter = new EventAdapter(mAnniversaryEvent);
+                rv_event.setAdapter(eventAdapter);
+            }
+        });
+        tv_me.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rv_event.setLayoutManager(new LinearLayoutManager(CalenderActivity.this));
+                eventAdapter = new EventAdapter(mMyEvent);
+                rv_event.setAdapter(eventAdapter);
             }
         });
     }
@@ -270,6 +327,85 @@ public class CalenderActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+    }
+
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void setEvent(List<OwnEventList.MessageText> eventsList) {
+        if (eventsList != null && eventsList.size() > 0) {
+            for (int i = 0; i < eventsList.size(); i++) {
+                if (eventsList.get(i).getEventDateAndTime() != null && !TextUtils.isEmpty(eventsList.get(i).getEventDateAndTime())
+                        && !eventsList.get(i).getEventDateAndTime().equalsIgnoreCase("null")) {
+
+//                    String eDate[] = eventsList.get(i).getStart().split("T");
+                    //      String eDate[] = eventsList.get(i).getStartDate().split("\\.");
+
+                    // String availDateTime = Methods.convertDateTimeFormat(eDate[0], "yyyy-MM-dd'T'HH:mm:ss", "dd-MM-yyyy");
+
+
+                    String allTimeInfo = eventsList.get(i).getEventDateAndTime();
+                    DateFormat timeZoneFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    timeZoneFormat.setTimeZone(TimeZone.getTimeZone("Etc/GMT-8"));
+                    Date time = new java.util.Date(Long.parseLong(allTimeInfo));
+                    // System.out.println(time);
+                    // System.out.println(timeZoneFormat.format(time));
+
+
+                    String availDateTime = timeZoneFormat.format(time);
+
+
+                    String[] eventDate = new String[0];
+                    if (availDateTime != null) {
+                        eventDate = availDateTime.split("-");
+                    }
+                    int eventMonth = Integer.parseInt(eventDate[1]) - 1;
+
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Integer.parseInt(eventDate[2]),
+                            eventMonth, Integer.parseInt(eventDate[0]));
+
+
+               /*     calendar.setTime(time);
+                    calendar.add(Calendar.DATE, 1);
+                    time = calendar.getTime();*/
+                    Log.i("TAG", "setEvent: " + time);
+
+                   /* if (eventsList.get(i).getColor() != null && !eventsList.get(i).getColor().isEmpty()) {
+
+                        if (eventsList.get(i).getColor().equalsIgnoreCase("CL3")) {
+                            events.add(new EventDay(calendar, R.drawable.event_1));
+                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL4")) {
+                            events.add(new EventDay(calendar, R.drawable.event_2));
+                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL5")) {
+                            events.add(new EventDay(calendar, R.drawable.event_3));
+                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL2")) {
+                            events.add(new EventDay(calendar, R.drawable.event_4));
+                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL6")) {
+                            events.add(new EventDay(calendar, R.drawable.event_5));
+                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL7")) {
+                            events.add(new EventDay(calendar, R.drawable.event_6));
+                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL8")) {
+                            events.add(new EventDay(calendar, R.drawable.event_7));
+                        }
+
+                    } else {
+                        events.add(new EventDay(calendar, R.drawable.events));
+                    }*/
+
+                    events.add(new EventDay(calendar, activity.getDrawable(R.drawable.event)));
+
+                    calenderStaff.setEvents(events);
+
+                }
+            }
+        } else {
+//            events.clear();
+            events = new ArrayList<>();
+            calenderStaff.setEvents(events);
+        }
     }
 
 
@@ -354,8 +490,15 @@ public class CalenderActivity extends AppCompatActivity {
                         JSONArray userArray = jsonData.getJSONArray("message_text");
                         for (int i = 0; i < userArray.length(); i++) {
                             JSONObject userDetail = userArray.getJSONObject(i);
-                            eventTypeList.add(userDetail.getString("event_type_name"));
-                            eventTypeIdList.add(userDetail.getString("event_type_id"));
+                            if (user_role.equalsIgnoreCase("1")) {
+                                eventTypeList.add(userDetail.getString("event_type_name"));
+                                eventTypeIdList.add(userDetail.getString("event_type_id"));
+                            } else {
+                                if (!userDetail.getString("event_type_id").equalsIgnoreCase("7")) {
+                                    eventTypeList.add(userDetail.getString("event_type_name"));
+                                    eventTypeIdList.add(userDetail.getString("event_type_id"));
+                                }
+                            }
                         }
                     }
                 } else {
@@ -541,23 +684,34 @@ public class CalenderActivity extends AppCompatActivity {
                         anniversary_even_count = 0;
                         my_event_count = 0;
 
-                        for (int i = 0; i < userArray.length(); i++) {
+
+                        OwnEventList data = new OwnEventList();
+                        Gson gson = new Gson();
+                        data = gson.fromJson(jsonStr, OwnEventList.class);
+                        //now you have Pojo do whatever
+
+                        for (int i = 0; i < data.getMessageText().size(); i++) {
                             JSONObject jsonObject2 = userArray.getJSONObject(i);
-                            Timestamp ts = new Timestamp(Integer.valueOf(jsonObject2.getString("event_date_and_time")));
+                            Timestamp ts = new Timestamp(Integer.valueOf(data.getMessageText().get(i).getEventDateAndTime()));
                             Date date = new Date(ts.getTime());
-                            if (jsonObject2.getString("event_type_id").equals("3")) {
+                            if (data.getMessageText().get(i).getEventTypeId().equals("3")) {
                                 birthday_event_count = birthday_event_count + 1;
-                            } else if (jsonObject2.getString("event_type_id").equals("4")) {
+                                mBirthdayEvent.add(data.getMessageText().get(i));
+                            } else if (data.getMessageText().get(i).getEventTypeId().equals("4")) {
                                 anniversary_even_count = anniversary_even_count + 1;
-                            } else if (jsonObject2.getString("event_type_id").equals("1")) {
+                                mAnniversaryEvent.add(data.getMessageText().get(i));
+                            } else if (data.getMessageText().get(i).getEventTypeId().equals("1")) {
                                 my_event_count = my_event_count + 1;
+                                mMyEvent.add(data.getMessageText().get(i));
                             }
                         }
+
 
                         tv_be.setText("Birthday Event(" + birthday_event_count + ")");
                         tv_ae.setText("Anniversary Event(" + anniversary_even_count + ")");
                         tv_me.setText("My Event(" + my_event_count + ")");
-
+                        events.clear();
+                        setEvent(data.getMessageText());
 
                     } else {
                         responseMsg = jsonData.getString("message_text");
