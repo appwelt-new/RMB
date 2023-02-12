@@ -6,14 +6,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +33,8 @@ import com.theappwelt.rmb.utilities.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -47,6 +55,11 @@ public class UpdateProfile extends AppCompatActivity {
     String city_id = "";
     String userid;
     TextView btn_update;
+    CircleImageView profileImageView;
+    CircleImageView chooseImg;
+    public int SELECT_ITEM_PROFIL_CODE = 1327;
+    Bitmap bitmapChapture;
+    String chaptureImageProfile = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +71,8 @@ public class UpdateProfile extends AppCompatActivity {
         SharedPreferences sh = getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         userid = sh.getString("memberId", "");
 
+        chooseImg = findViewById(R.id.chooseImg);
+        profileImageView = findViewById(R.id.profileImageView);
         iv_linkedin = findViewById(R.id.iv_linkedin);
         web_broswer = findViewById(R.id.web_broswer);
         txtMemberId = findViewById(R.id.txtMemberId);
@@ -105,7 +120,16 @@ public class UpdateProfile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new UpdateProfileData().execute();
+            }
+        });
 
+        chooseImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Title"), SELECT_ITEM_PROFIL_CODE);
             }
         });
     }
@@ -192,11 +216,7 @@ public class UpdateProfile extends AppCompatActivity {
                         member_pincode = userDetail.getString("member_pincode");
                         state_id = userDetail.getString("state_id");
                         city_id = userDetail.getString("city_id");
-                       /* member_pincode = userDetail.getString("member_pincode");
-                        member_pincode = userDetail.getString("member_pincode");
-                        member_pincode = userDetail.getString("member_pincode");
-                        member_pincode = userDetail.getString("member_pincode");
-                        member_pincode = userDetail.getString("member_pincode");*/
+
                         if (!userDetail.getString("member_bussiness_mobile").equalsIgnoreCase("null")) {
                             etBusinessMobileNumber.setText(userDetail.optString("member_bussiness_mobile"));
                         }
@@ -219,7 +239,17 @@ public class UpdateProfile extends AppCompatActivity {
                         }
 
                         //  location.setText("Address : "+ userDetail.getString("member_address"));
-                        imageUrl = "Address : " + userDetail.getString("member_profile_photo");
+                        imageUrl = userDetail.getString("member_profile_photo");
+                        if (imageUrl != null && !TextUtils.isEmpty(imageUrl)) {
+
+
+                            final String encodedString = imageUrl;
+                            final String pureBase64Encoded = encodedString.substring(encodedString.indexOf(",") + 1);
+
+                            byte[] decodedString = Base64.decode(pureBase64Encoded, Base64.DEFAULT);
+                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            profileImageView.setImageBitmap(decodedByte);
+                        }
                     /*    Picasso.get().load(imageUrl)
                                 .placeholder(R.drawable.ic_baseline_account_circle)
                                 .into(profileImg);*/
@@ -265,14 +295,14 @@ public class UpdateProfile extends AppCompatActivity {
                         .add("memberId", userid)
                         .add("fName", etFirstName.getText().toString())
                         .add("lName", etLastName.getText().toString())
-                        .add("uMobile", etMobileNumber.getText().toString())
                         .add("member_bussiness_mobile", etBusinessMobileNumber.getText().toString())
                         .add("bussiness_website", etBusinessWebsite.getText().toString())
                         .add("member_bussiness_email", etBusinessEmail.getText().toString())
                         .add("uEmail", etEmail.getText().toString())
-                        .add("businessName", etBusinessName.getText().toString())
+                        .add("bussiness_name", etBusinessName.getText().toString())
                         .add("uPincode", member_pincode)
                         .add("uCityId", city_id)
+                        .add("linkedin", etLinkedIn.getText().toString())
                         .add("uStateId", state_id)
                         .add("user_id", userid)
 
@@ -303,17 +333,113 @@ public class UpdateProfile extends AppCompatActivity {
 
                 if (jsonStr != null) {
                     jsonData = new JSONObject(jsonStr);
+
                     Log.d("ReferralReceived1", "" + jsonData.toString());
                     String message_text = jsonData.getString("message_text");
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
-                    Log.d("profile", "" + responseSuccess);
+                    Log.d("profile", "" + message_text);
                     if (responseSuccess.equals("1000")) {
-                        Utils.showDialog(UpdateProfile.this, message_text, false, false);
+                        Utils.showDialog(UpdateProfile.this, "Member Updated Successfully", false, false);
                     } else {
                         Utils.showDialog(UpdateProfile.this, message_text, false, false);
-
                     }
 
+                }
+            } catch (JSONException jsonException) {
+                jsonException.printStackTrace();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SELECT_ITEM_PROFIL_CODE) {
+                Uri uri = data.getData();
+                try {
+                    profileImageView.setImageURI(uri);
+                    bitmapChapture = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), uri);
+                    chaptureImageProfile = imagetostring(bitmapChapture);
+                    uploadImage(chaptureImageProfile);
+                    profileImageView.setImageBitmap(bitmapChapture);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void uploadImage(String chaptureImageProfile) {
+        new UpdatePic().execute();
+    }
+
+    private String imagetostring(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 25, byteArrayOutputStream);
+        byte[] imgbyte = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(imgbyte, Base64.NO_WRAP);
+    }
+
+    public class UpdatePic extends AsyncTask<String, Void, String> {
+
+        private String jsonStr, responseSuccess, responseMsg;
+        private JSONObject jsonData;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... args) {
+            try {
+                ServiceHandler shh = new ServiceHandler(UpdateProfile.this);
+
+                RequestBody values = new FormBody.Builder()
+                        .add("uFile", "data:image/jpeg;base64," + chaptureImageProfile)
+                        .add("uMemberId", userid)
+                        .build();
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "member/addMemberProfile", ServiceHandler.POST, values);
+                Log.d("meeting: ", "> " + jsonStr);
+
+            } catch (final Exception e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showDialog(UpdateProfile.this, e.toString(), false, false);
+                    }
+                });
+                // workerThread();
+                Log.e("ServiceHandler", e.toString());
+            }
+            return jsonStr;
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onPostExecute(String jsonStr) {
+            super.onPostExecute(jsonStr);
+            try {
+
+                if (jsonStr != null) {
+                    jsonData = new JSONObject(jsonStr);
+                    Log.d("ReferralReceived1", "" + jsonData.toString());
+                    responseSuccess = String.valueOf(jsonData.getInt("message_code"));
+                    Log.d("profile", "" + responseSuccess);
+                    responseMsg = jsonData.getString("message_text");
+                    if (responseSuccess.equals("1000")) {
+                        Utils.showDialog(UpdateProfile.this, responseMsg, false, false);
+                    } else {
+                        Utils.showDialog(UpdateProfile.this, responseMsg, false, false);
+                    }
                 }
             } catch (JSONException jsonException) {
                 jsonException.printStackTrace();

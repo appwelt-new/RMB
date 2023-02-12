@@ -71,7 +71,6 @@ public class SignInActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
             //spinProgress.setVisibility(View.VISIBLE);
@@ -80,7 +79,6 @@ public class SignInActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(SignInActivity.this);
                 RequestBody values = new FormBody.Builder()
@@ -163,7 +161,6 @@ public class SignInActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
             //spinProgress.setVisibility(View.VISIBLE);
@@ -172,7 +169,6 @@ public class SignInActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... args) {
-            // TODO Auto-generated method stub
             try {
                 ServiceHandler shh = new ServiceHandler(SignInActivity.this);
                 RequestBody values = new FormBody.Builder()

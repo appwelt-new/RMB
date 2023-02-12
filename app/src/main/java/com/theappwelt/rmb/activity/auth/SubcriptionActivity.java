@@ -68,9 +68,7 @@ public class SubcriptionActivity extends AppCompatActivity {
         et_tran_id = findViewById(R.id.et_tran_id);
         tv_name = findViewById(R.id.tv_name);
 
-
         tv_name.setText("Hello " + memberFirstName + " " + memberLastName);
-
 
         btn_pay.setOnClickListener(new View.OnClickListener() {
             @Override

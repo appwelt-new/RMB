@@ -51,6 +51,18 @@ public class OwnEventList {
         @Expose
         private String eventTypeName;
 
+        @SerializedName("event_start")
+        @Expose
+        private String event_start;
+
+        public String getEvent_start() {
+            return event_start;
+        }
+
+        public void setEvent_start(String event_start) {
+            this.event_start = event_start;
+        }
+
         public String getMemberEventId() {
             return memberEventId;
         }

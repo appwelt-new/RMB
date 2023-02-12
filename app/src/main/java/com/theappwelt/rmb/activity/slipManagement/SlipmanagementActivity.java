@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import com.theappwelt.rmb.R;
 import com.theappwelt.rmb.activity.features.MainActivity;
 
+
 public class SlipmanagementActivity extends AppCompatActivity {
 
     LinearLayout createGreatBhet, createMultipleMember, meetingCreated, meetingRequestLayout, addReferralSlipLayout, referralGivenLayout, referralsReceivedLayout;

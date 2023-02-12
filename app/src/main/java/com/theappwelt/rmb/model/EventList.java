@@ -33,6 +33,11 @@ public class EventList {
 
     public class MessageText {
 
+        @SerializedName("event_start")
+        @Expose
+        private String event_start;
+
+
         @SerializedName("event_id")
         @Expose
         private String eventId;
@@ -93,6 +98,14 @@ public class EventList {
         @SerializedName("is_deleted")
         @Expose
         private String isDeleted;
+
+        public String getEvent_start() {
+            return event_start;
+        }
+
+        public void setEvent_start(String event_start) {
+            this.event_start = event_start;
+        }
 
         public String getEventId() {
             return eventId;
@@ -254,5 +267,39 @@ public class EventList {
             this.isDeleted = isDeleted;
         }
 
+        @Override
+        public String toString() {
+            return "MessageText{" +
+                    "eventId='" + eventId + '\'' +
+                    ", eventName='" + eventName + '\'' +
+                    ", eventDateAndTime='" + eventDateAndTime + '\'' +
+                    ", eventEndDateAndTime='" + eventEndDateAndTime + '\'' +
+                    ", eventDuration='" + eventDuration + '\'' +
+                    ", eventDescription='" + eventDescription + '\'' +
+                    ", eventCategoryId='" + eventCategoryId + '\'' +
+                    ", eventTypeId='" + eventTypeId + '\'' +
+                    ", eventLocation='" + eventLocation + '\'' +
+                    ", eventHost='" + eventHost + '\'' +
+                    ", eventUrl='" + eventUrl + '\'' +
+                    ", eventStatus='" + eventStatus + '\'' +
+                    ", eventPrice='" + eventPrice + '\'' +
+                    ", eventOnlyMember='" + eventOnlyMember + '\'' +
+                    ", eventRating='" + eventRating + '\'' +
+                    ", createdOn='" + createdOn + '\'' +
+                    ", modifiedOn='" + modifiedOn + '\'' +
+                    ", createdBy='" + createdBy + '\'' +
+                    ", modifiedBy='" + modifiedBy + '\'' +
+                    ", isDeleted='" + isDeleted + '\'' +
+                    ", event_start='" + event_start + '\'' +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "EventList{" +
+                "messageCode='" + messageCode + '\'' +
+                ", messageText=" + messageText +
+                '}';
     }
 }

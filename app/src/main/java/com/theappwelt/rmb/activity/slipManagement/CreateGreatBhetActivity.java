@@ -457,7 +457,6 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(CreateGreatBhetActivity.this, responseMsg, false, false);
                     }
-                } else {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -537,9 +536,7 @@ public class CreateGreatBhetActivity extends AppCompatActivity {
         protected String doInBackground(String... args) {
             try {
                 ServiceHandler shh = new ServiceHandler(CreateGreatBhetActivity.this);
-
                 jsonStr = shh.makeServiceCall(Constant.BASE_URL + "listbranches", ServiceHandler.GET);
-
             } catch (final Exception e) {
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {

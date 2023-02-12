@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.theappwelt.rmb.R;
+import com.theappwelt.rmb.activity.features.CalenderActivity;
 import com.theappwelt.rmb.activity.features.EventManagementActivity;
 import com.theappwelt.rmb.model.EventList;
 
@@ -41,7 +43,7 @@ public class EventManagementAdapter extends RecyclerView.Adapter<EventManagement
 
     List<EventList.MessageText> messageText = new ArrayList<>();
 
-    public EventManagementAdapter(EventManagementActivity context, List<EventList.MessageText> messageText) {
+    public EventManagementAdapter(List<EventList.MessageText> messageText) {
         this.context = context;
         this.messageText = messageText;
     }
@@ -62,8 +64,9 @@ public class EventManagementAdapter extends RecyclerView.Adapter<EventManagement
     public void onBindViewHolder(@NonNull EventManagementAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.setIsRecyclable(false);
         EventList.MessageText data = messageText.get(position);
+        Log.i("TAG", "onBindViewHolder: "+data);
         holder.name.setText(data.getEventName());
-        holder.date.setText(data.getEventDateAndTime());
+        holder.date.setText(data.getEvent_start());
         holder.location.setText(data.getEventLocation());
         holder.host.setText(data.getEventHost());
         holder.editEvent.setOnClickListener(new View.OnClickListener() {

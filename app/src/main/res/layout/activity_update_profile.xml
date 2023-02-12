@@ -40,7 +40,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="30dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/rotaryloginbg"
+                    android:src="@drawable/rmb_logo"
                     android:visibility="gone" />
 
                 <TextView
@@ -106,7 +106,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginBottom="5dp"
-                    android:text="Member Id" />
+                    android:text="Rotary Membership Id" />
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/txtMemberId"
@@ -230,7 +230,7 @@
                     android:layout_marginRight="15dp"
                     android:layout_marginBottom="5dp"
                     android:background="@color/bgSolid"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:hint="Mobile Number"
                     android:inputType="numberDecimal"
                     android:maxLength="10"
@@ -395,7 +395,7 @@
                     android:layout_marginRight="15dp"
                     android:layout_marginBottom="5dp"
                     android:background="@color/bgSolid"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:hint="LinkedIn Profile"
                     android:paddingLeft="8dp"
                     android:text=""

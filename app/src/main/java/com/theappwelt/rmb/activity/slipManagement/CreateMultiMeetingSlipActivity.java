@@ -60,6 +60,7 @@ public class CreateMultiMeetingSlipActivity extends AppCompatActivity {
     Dialog dialog;
     String multi_member_name = "";
     List<Integer> multi_member_id = new ArrayList<>();
+    String multi_member_id2 = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,13 +196,19 @@ public class CreateMultiMeetingSlipActivity extends AppCompatActivity {
                             } else {
                                 multi_member_name = multi_member_name + "\n" + selectMemberNameSpinner.get(position);
                                 multi_member_id.add(Integer.valueOf(selectMemberNameID.get(position)));
+                                if (multi_member_id2.isEmpty()) {
+                                    multi_member_id2 = selectMemberNameID.get(position);
+                                } else {
+                                    multi_member_id2 = multi_member_id2 + "," + selectMemberNameID.get(position);
+                                }
                             }
                         } else {
                             multi_member_name = multi_member_name + "\n" + selectMemberNameSpinner.get(position);
-
                             multi_member_id.add(Integer.valueOf(selectMemberNameID.get(position)));
+                            multi_member_id2 = selectMemberNameID.get(position);
                         }
                         Log.i("TAG", "onItemClick: " + multi_member_id);
+                        Log.i("TAG", "onItemClick2: " + multi_member_id2);
                         tv_multple_member.setText(multi_member_name);
 
 
@@ -311,11 +318,13 @@ public class CreateMultiMeetingSlipActivity extends AppCompatActivity {
             Toast.makeText(this, "Enter details Properly", Toast.LENGTH_SHORT).show();
 
         } else {
-            if (branch) {
+
+            new addMultiMeeting().execute();
+            /*if (branch) {
                 new addMultiMeeting().execute();
             } else {
-                new getCrossSelectMemberName().execute();
-            }
+               // new getCrossSelectMemberName().execute();
+            }*/
 
         }
     }
@@ -397,7 +406,7 @@ public class CreateMultiMeetingSlipActivity extends AppCompatActivity {
 
                 RequestBody values = new FormBody.Builder()
                         .add("member_id", userId)
-                        .add("meetMemberId", String.valueOf(multi_member_id))
+                        .add("meetMemberId", multi_member_id2)
                         .add("location", "" + location.getText().toString())
                         .add("topic", "" + topicOfDiscussion.getText().toString())
                         .add("eStartTime", "" + startDate.getText().toString().trim() + " , " + startTime.getText().toString().trim())
@@ -423,15 +432,15 @@ public class CreateMultiMeetingSlipActivity extends AppCompatActivity {
                 if (jsonStr != null) {
                     jsonData = new JSONObject(jsonStr);
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
+                    responseMsg = jsonData.getString("message_text");
                     if (responseSuccess.equals("1000")) {
-                        JSONArray userArray = jsonData.getJSONArray("message_text");
-                        Log.d("Great bhet", userArray.toString());
-                        for (int i = 0; i < userArray.length(); i++) {
-                            JSONObject userDetail = userArray.getJSONObject(i);
-                            selectCrossMemberNameSpinner.add(userDetail.getString("member_id") + ") " + userDetail.getString("member_first_name") + " " + userDetail.getString("member_last_name"));
-                        }
+                        multi_member_id2 = "";
+
+                        Utils.showDialog(CreateMultiMeetingSlipActivity.this, responseMsg, false, false);
+
                     } else {
                         responseMsg = jsonData.getString("message_text");
+                        Utils.showDialog(CreateMultiMeetingSlipActivity.this, responseMsg, false, false);
 
                     }
                 }
@@ -521,7 +530,7 @@ public class CreateMultiMeetingSlipActivity extends AppCompatActivity {
             try {
 
                 Log.i("TAG", "member_id: " + userId);
-                Log.i("TAG", "meetMemberId: " + multi_member_id);
+                Log.i("TAG", "meetMemberId: " + multi_member_id2);
                 Log.i("TAG", "location: " + location.getText().toString());
                 Log.i("TAG", "topic: " + topicOfDiscussion.getText().toString());
                 Log.i("TAG", "eStartTime: " + startDate.getText().toString().trim() + " , " + startTime.getText().toString().trim());
@@ -531,7 +540,7 @@ public class CreateMultiMeetingSlipActivity extends AppCompatActivity {
                 ServiceHandler shh = new ServiceHandler(CreateMultiMeetingSlipActivity.this);
                 RequestBody values = new FormBody.Builder()
                         .add("member_id", userId)
-                        .add("meetMemberId", String.valueOf(multi_member_id))
+                        .add("meetMemberId", multi_member_id2)
                         .add("location", "" + location.getText().toString())
                         .add("topic", "" + topicOfDiscussion.getText().toString())
                         .add("eStartTime", "" + startDate.getText().toString().trim() + " , " + startTime.getText().toString().trim())
@@ -558,7 +567,7 @@ public class CreateMultiMeetingSlipActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Utils.showDialog(CreateMultiMeetingSlipActivity.this, e.toString(), false, false);
+                        Utils.showDialog(CreateMultiMeetingSlipActivity.this, e.toString(), true, false);
                     }
                 });
                 // workerThread();
@@ -575,16 +584,13 @@ public class CreateMultiMeetingSlipActivity extends AppCompatActivity {
                 if (jsonStr != null) {
                     jsonData = new JSONObject(jsonStr);
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
+                    responseMsg = jsonData.getString("message_text");
                     Log.d("multiMeeting", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
-                        JSONArray userArray = jsonData.getJSONArray("message_text");
+                        multi_member_id2 = "";
+                        Utils.showDialog(CreateMultiMeetingSlipActivity.this, responseMsg, true, false);
+                        clearText();
 
-                        multi_member_id.clear();
-                        Log.d("multiMeeting", userArray.toString());
-                        for (int i = 0; i < userArray.length(); i++) {
-                            JSONObject userDetail = userArray.getJSONObject(i);
-                            selectMemberNameSpinner.add(userDetail.getString("member_first_name") + " " + userDetail.getString("member_last_name"));
-                        }
                     } else {
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(CreateMultiMeetingSlipActivity.this, responseMsg, false, false);
@@ -595,6 +601,14 @@ public class CreateMultiMeetingSlipActivity extends AppCompatActivity {
                 Toast.makeText(CreateMultiMeetingSlipActivity.this, "Something went wrong please Retry!!!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void clearText() {
+        tv_multple_member.setText("");
+        startDate.setText("");
+        startTime.setText("");
+        location.setText("");
+        topicOfDiscussion.setText("");
     }
 
     public String checkDigit(int number) {

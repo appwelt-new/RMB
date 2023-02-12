@@ -39,8 +39,10 @@ import com.theappwelt.rmb.JavaClasses.setDate;
 import com.theappwelt.rmb.R;
 import com.theappwelt.rmb.adapters.EventAdapter;
 import com.theappwelt.rmb.adapters.EventManagementAdapter;
+import com.theappwelt.rmb.model.EventList;
 import com.theappwelt.rmb.model.OwnEventList;
 import com.theappwelt.rmb.utilities.Constant;
+import com.theappwelt.rmb.utilities.Method;
 import com.theappwelt.rmb.utilities.ServiceHandler;
 import com.theappwelt.rmb.utilities.Utils;
 
@@ -49,13 +51,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
@@ -83,7 +82,9 @@ public class CalenderActivity extends AppCompatActivity {
     String branch_id = "";
     String user_role = "";
     private int mYear, mMonth, mDay, mHour, mMinute;
-    TextView tv_be, tv_ae, tv_me;
+    TextView tv_be, tv_ae, tv_me, tv_show_all_event;
+
+    String endDateTime = "";
 
     // event count
     int birthday_event_count = 0;
@@ -92,7 +93,7 @@ public class CalenderActivity extends AppCompatActivity {
 
     //calender view
     CalendarView calenderStaff;
-    RecyclerView rv_event;
+    RecyclerView rv_event, rv_all_event;
     private List<EventDay> events = new ArrayList<>();
 
     Activity activity;
@@ -101,12 +102,13 @@ public class CalenderActivity extends AppCompatActivity {
     List<OwnEventList.MessageText> mAnniversaryEvent = new ArrayList<>();
     List<OwnEventList.MessageText> mMyEvent = new ArrayList<>();
     EventAdapter eventAdapter;
+    EventManagementAdapter eventManagementAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calender);
-        getSupportActionBar().setTitle(" Calender ");
+        getSupportActionBar().setTitle("Calender");
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         activity = CalenderActivity.this;
@@ -117,10 +119,12 @@ public class CalenderActivity extends AppCompatActivity {
         user_role = sh.getString("user_role", "");
 
         rv_event = findViewById(R.id.rv_event);
+        rv_all_event = findViewById(R.id.rv_all_event);
         addEvent = findViewById(R.id.addEvent);
         tv_be = findViewById(R.id.tv_be);
         tv_ae = findViewById(R.id.tv_ae);
         tv_me = findViewById(R.id.tv_me);
+        tv_show_all_event = findViewById(R.id.tv_show_all_event);
 
         calenderStaff = findViewById(R.id.calenderStaff);
 
@@ -129,9 +133,6 @@ public class CalenderActivity extends AppCompatActivity {
         events = new ArrayList<>();
 
         new getEventType().execute();
-        new getEventData().execute();
-
-        Log.i("user_role", "onCreate: "+user_role);
 
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,31 +141,18 @@ public class CalenderActivity extends AppCompatActivity {
             }
         });
 
+
+        new eventManagementData().execute();
+
         rv_event.setLayoutManager(new LinearLayoutManager(CalenderActivity.this));
         eventAdapter = new EventAdapter(mBirthdayEvent);
         rv_event.setAdapter(eventAdapter);
-        tv_be.setOnClickListener(new View.OnClickListener() {
+
+        tv_show_all_event.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rv_event.setLayoutManager(new LinearLayoutManager(CalenderActivity.this));
-                eventAdapter = new EventAdapter(mBirthdayEvent);
-                rv_event.setAdapter(eventAdapter);
-            }
-        });
-        tv_ae.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                rv_event.setLayoutManager(new LinearLayoutManager(CalenderActivity.this));
-                eventAdapter = new EventAdapter(mAnniversaryEvent);
-                rv_event.setAdapter(eventAdapter);
-            }
-        });
-        tv_me.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                rv_event.setLayoutManager(new LinearLayoutManager(CalenderActivity.this));
-                eventAdapter = new EventAdapter(mMyEvent);
-                rv_event.setAdapter(eventAdapter);
+                rv_event.setVisibility(View.GONE);
+                rv_all_event.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -259,13 +247,13 @@ public class CalenderActivity extends AppCompatActivity {
                 if (!selectedEvent.equalsIgnoreCase("Birthday Event") && !selectedEvent.equalsIgnoreCase("Anniversary Event") &&
                         !selectedEvent.equalsIgnoreCase("Tap to select")
                 ) {
-                    ll_event_end_date.setVisibility(View.VISIBLE);
-                    ll_event_end_time.setVisibility(View.VISIBLE);
+                    //  ll_event_end_date.setVisibility(View.VISIBLE);
+                    //  ll_event_end_time.setVisibility(View.VISIBLE);
                     ll_location.setVisibility(View.VISIBLE);
                     ll_host.setVisibility(View.VISIBLE);
                     ll_url.setVisibility(View.VISIBLE);
                     ll_price.setVisibility(View.VISIBLE);
-                    ll_rating.setVisibility(View.VISIBLE);
+                    //    ll_rating.setVisibility(View.VISIBLE);
                 } else {
                     ll_event_end_date.setVisibility(View.GONE);
                     ll_event_end_time.setVisibility(View.GONE);
@@ -309,91 +297,45 @@ public class CalenderActivity extends AppCompatActivity {
 
                 description2 = description.getText().toString();
 
+                endDateTime = Method.convertDateTimeFormatApp(date2 + " " + time2, "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss");
 
                 if (eventName.equals("") || date2.equals("") || time2.equals("")) {
                     // field missing
                     Toast.makeText(CalenderActivity.this, "Enter Details " + eventName + " " + eventType + " " + date2 + " " + time2, Toast.LENGTH_SHORT).show();
                 } else {
-                    if (eventType.contains("Birthday Event")) {
-                        // birthday
-                        new addBirthDayEvent().execute();
-                    } else if (eventType.contains("Anniversary Event")) {
-                        // anniversary
-                        new addAnniversaryEvent().execute();
-                    } else {
-                        // main event
-                        new addEvent().execute();
-                    }
+                    new addEvent(dialog).execute();
                 }
             }
         });
-
 
     }
 
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private void setEvent(List<OwnEventList.MessageText> eventsList) {
+    private void setEvent(List<EventList.MessageText> eventsList) {
         if (eventsList != null && eventsList.size() > 0) {
             for (int i = 0; i < eventsList.size(); i++) {
-                if (eventsList.get(i).getEventDateAndTime() != null && !TextUtils.isEmpty(eventsList.get(i).getEventDateAndTime())
-                        && !eventsList.get(i).getEventDateAndTime().equalsIgnoreCase("null")) {
+                if (eventsList.get(i).getEvent_start() != null && !TextUtils.isEmpty(eventsList.get(i).getEvent_start())
+                        && !eventsList.get(i).getEvent_start().equalsIgnoreCase("null")) {
+                    String calendar2 = Method.cale(eventsList.get(i).getEvent_start());
+                    String yr = "";
+                    String mn = "";
+                    String dt = "";
 
-//                    String eDate[] = eventsList.get(i).getStart().split("T");
-                    //      String eDate[] = eventsList.get(i).getStartDate().split("\\.");
+                    String[] calendar_value = new String[0];
+                    if (calendar2 != null && !calendar2.isEmpty()) {
+                        calendar_value = calendar2.split("-");
+                        yr = calendar_value[0];
+                        mn = calendar_value[1];
+                        dt = calendar_value[2];
 
-                    // String availDateTime = Methods.convertDateTimeFormat(eDate[0], "yyyy-MM-dd'T'HH:mm:ss", "dd-MM-yyyy");
-
-
-                    String allTimeInfo = eventsList.get(i).getEventDateAndTime();
-                    DateFormat timeZoneFormat = new SimpleDateFormat("dd-MM-yyyy");
-                    timeZoneFormat.setTimeZone(TimeZone.getTimeZone("Etc/GMT-8"));
-                    Date time = new java.util.Date(Long.parseLong(allTimeInfo));
-                    // System.out.println(time);
-                    // System.out.println(timeZoneFormat.format(time));
-
-
-                    String availDateTime = timeZoneFormat.format(time);
-
-
-                    String[] eventDate = new String[0];
-                    if (availDateTime != null) {
-                        eventDate = availDateTime.split("-");
                     }
-                    int eventMonth = Integer.parseInt(eventDate[1]) - 1;
 
 
                     Calendar calendar = Calendar.getInstance();
-                    calendar.set(Integer.parseInt(eventDate[2]),
-                            eventMonth, Integer.parseInt(eventDate[0]));
-
-
-               /*     calendar.setTime(time);
-                    calendar.add(Calendar.DATE, 1);
-                    time = calendar.getTime();*/
-                    Log.i("TAG", "setEvent: " + time);
-
-                   /* if (eventsList.get(i).getColor() != null && !eventsList.get(i).getColor().isEmpty()) {
-
-                        if (eventsList.get(i).getColor().equalsIgnoreCase("CL3")) {
-                            events.add(new EventDay(calendar, R.drawable.event_1));
-                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL4")) {
-                            events.add(new EventDay(calendar, R.drawable.event_2));
-                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL5")) {
-                            events.add(new EventDay(calendar, R.drawable.event_3));
-                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL2")) {
-                            events.add(new EventDay(calendar, R.drawable.event_4));
-                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL6")) {
-                            events.add(new EventDay(calendar, R.drawable.event_5));
-                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL7")) {
-                            events.add(new EventDay(calendar, R.drawable.event_6));
-                        } else if (eventsList.get(i).getColor().equalsIgnoreCase("CL8")) {
-                            events.add(new EventDay(calendar, R.drawable.event_7));
-                        }
-
-                    } else {
-                        events.add(new EventDay(calendar, R.drawable.events));
-                    }*/
+                    calendar.set(Integer.parseInt(yr),
+                            (Integer.parseInt(mn) - 1),
+                            Integer.parseInt(dt));
 
                     events.add(new EventDay(calendar, activity.getDrawable(R.drawable.event)));
 
@@ -460,8 +402,6 @@ public class CalenderActivity extends AppCompatActivity {
             try {
                 ServiceHandler shh = new ServiceHandler(CalenderActivity.this);
                 jsonStr = shh.makeServiceCall(Constant.BASE_URL + "event/eventListType", ServiceHandler.GET);
-                Log.d("meeting: ", "> " + jsonStr);
-
             } catch (final Exception e) {
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {
@@ -470,7 +410,6 @@ public class CalenderActivity extends AppCompatActivity {
                         Utils.showDialog(CalenderActivity.this, e.toString(), false, false);
                     }
                 });
-                // workerThread();
                 Log.e("ServiceHandler", e.toString());
             }
             return jsonStr;
@@ -483,20 +422,20 @@ public class CalenderActivity extends AppCompatActivity {
             try {
                 if (jsonStr != null) {
                     jsonData = new JSONObject(jsonStr);
-                    Log.d("ReferralReceived1", "" + jsonData.toString());
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
-                    Log.d("profile", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
                         JSONArray userArray = jsonData.getJSONArray("message_text");
                         for (int i = 0; i < userArray.length(); i++) {
                             JSONObject userDetail = userArray.getJSONObject(i);
-                            if (user_role.equalsIgnoreCase("1")) {
-                                eventTypeList.add(userDetail.getString("event_type_name"));
-                                eventTypeIdList.add(userDetail.getString("event_type_id"));
-                            } else {
-                                if (!userDetail.getString("event_type_id").equalsIgnoreCase("7")) {
+                            if (userDetail.getString("is_deleted").equals("0")) {
+                                if (user_role.equalsIgnoreCase("1")) {
                                     eventTypeList.add(userDetail.getString("event_type_name"));
                                     eventTypeIdList.add(userDetail.getString("event_type_id"));
+                                } else {
+                                    if (!userDetail.getString("event_type_id").equalsIgnoreCase("7")) {
+                                        eventTypeList.add(userDetail.getString("event_type_name"));
+                                        eventTypeIdList.add(userDetail.getString("event_type_id"));
+                                    }
                                 }
                             }
                         }
@@ -516,6 +455,11 @@ public class CalenderActivity extends AppCompatActivity {
     public class addBirthDayEvent extends AsyncTask<String, Void, String> {
         private String jsonStr, responseSuccess, responseMsg;
         private JSONObject jsonData;
+        Dialog dialog;
+
+        public addBirthDayEvent(Dialog dialog) {
+            this.dialog = dialog;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -558,8 +502,10 @@ public class CalenderActivity extends AppCompatActivity {
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
                     Log.d("great Bhet", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
+                        dialog.dismiss();
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
+                        new getEventData().execute();
                     } else {
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
@@ -576,6 +522,12 @@ public class CalenderActivity extends AppCompatActivity {
     public class addAnniversaryEvent extends AsyncTask<String, Void, String> {
         private String jsonStr, responseSuccess, responseMsg;
         private JSONObject jsonData;
+
+        Dialog dialog;
+
+        public addAnniversaryEvent(Dialog dialog) {
+            this.dialog = dialog;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -618,8 +570,10 @@ public class CalenderActivity extends AppCompatActivity {
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
                     Log.d("great Bhet", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
+                        dialog.dismiss();
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
+                        new getEventData().execute();
                     } else {
                         Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
                     }
@@ -710,8 +664,8 @@ public class CalenderActivity extends AppCompatActivity {
                         tv_be.setText("Birthday Event(" + birthday_event_count + ")");
                         tv_ae.setText("Anniversary Event(" + anniversary_even_count + ")");
                         tv_me.setText("My Event(" + my_event_count + ")");
-                        events.clear();
-                        setEvent(data.getMessageText());
+                       /* events.clear();
+                        setEvent(data.getMessageText());*/
 
                     } else {
                         responseMsg = jsonData.getString("message_text");
@@ -731,6 +685,12 @@ public class CalenderActivity extends AppCompatActivity {
         private String jsonStr, responseSuccess, responseMsg;
         private JSONObject jsonData;
 
+        Dialog dialog;
+
+        public addEvent(Dialog dialog) {
+            this.dialog = dialog;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -743,7 +703,7 @@ public class CalenderActivity extends AppCompatActivity {
                 RequestBody values = new FormBody.Builder()
                         .add("eName", eventName)
                         .add("eStartTime", date2 + " " + time2)
-                        .add("eEndTime", EventEndDate + " " + EventEndTime)
+                        .add("eEndTime", endDateTime)
                         .add("eDescription", description2)
                         .add("eCategoryId", business_CategoryId)
                         .add("eBranchId", branch_id)
@@ -751,7 +711,7 @@ public class CalenderActivity extends AppCompatActivity {
                         .add("eHost", event_host)
                         .add("eURL", event_url)
                         .add("ePrice", event_price)
-                        .add("eRating", event_rating)
+                        .add("eRating", "5")
                         .add("eType", selectedEventId)
                         .build();
                 jsonStr = shh.makeServiceCall(Constant.BASE_URL + "event/eventAdd", ServiceHandler.POST, values);
@@ -779,8 +739,11 @@ public class CalenderActivity extends AppCompatActivity {
                     Log.d("great Bhet", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
                         //JSONArray userArray = jsonData.getJSONArray("message_text");
+                        dialog.dismiss();
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
+
+                        new eventManagementData().execute();
 
                         //  Log.d("EventId", userArray.toString());
                         //  JSONObject jsonObject = userArray.getJSONObject(0);
@@ -799,25 +762,12 @@ public class CalenderActivity extends AppCompatActivity {
     }
 
 
-    public void addMemberEvent() {
-        String url = Constant.BASE_URL + "event/eventMemberAdd";
 
-        /*
-        * Params
-        *
-        * eName
-        ememberId
-        eStartTime
-        eEndTime
-        eCategoryId
-        eLocation
-        eHost
-        eURL
-        *
-        * */
+    public String checkDigit(int number) {
+        return number <= 9 ? "0" + number : String.valueOf(number);
     }
 
-    /*public class addEvent extends AsyncTask<String, Void, String> {
+    public class eventManagementData extends AsyncTask<String, Void, String> {
         private String jsonStr, responseSuccess, responseMsg;
         private JSONObject jsonData;
 
@@ -828,31 +778,22 @@ public class CalenderActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... args) {
-
             try {
-                ServiceHandler shh = new ServiceHandler(CalenderActivity.this);
+                ServiceHandler shh = new ServiceHandler(activity);
                 RequestBody values = new FormBody.Builder()
-                        .add("eName", eventName)
-                        .add("ememberId", userId)
-                        .add("eStartTime", date2 + " " + time2)
-                        .add("eEndTime", EventEndDate + " " + EventEndTime)
-                        .add("eCategoryId", business_CategoryId)
-                        .add("eLocation", event_location)
-                        .add("eHost", event_host)
-                        .add("eURL", event_url)
                         .build();
-                jsonStr = shh.makeServiceCall("http://3.6.102.75/rmbapiv1/event/eventMemberAdd", ServiceHandler.POST, values);
-
-
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "event/eventList", ServiceHandler.GET);
+                Log.d("visitor: ", "> " + jsonStr);
             } catch (final Exception e) {
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Utils.showDialog(CalenderActivity.this, e.toString(), false, false);
+                        Utils.showDialog(activity, e.toString(), false, false);
                     }
                 });
                 // workerThread();
+                Log.e("ServiceHandler", e.toString());
             }
             return jsonStr;
         }
@@ -864,29 +805,30 @@ public class CalenderActivity extends AppCompatActivity {
                 if (jsonStr != null) {
                     jsonData = new JSONObject(jsonStr);
                     responseSuccess = String.valueOf(jsonData.getInt("message_code"));
-                    Log.d("great Bhet", "" + responseSuccess);
+                    Log.d("isSuccess", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
-                        //JSONArray userArray = jsonData.getJSONArray("message_text");
-                        responseMsg = jsonData.getString("message_text");
-                        Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
+                        String jsonString = jsonData.toString();
+                        EventList data = new EventList();
+                        Gson gson = new Gson();
+                        data = gson.fromJson(jsonString, EventList.class);
 
-                        //  Log.d("EventId", userArray.toString());
-                        //  JSONObject jsonObject = userArray.getJSONObject(0);
-                        // String event_id = jsonObject.getString("member_event_id");
-                        //Log.d("EventId", event_id.toString());
+                        if (data.getMessageText() != null && !data.getMessageText().isEmpty()) {
+                            rv_all_event.setLayoutManager(new LinearLayoutManager(activity));
+                            eventManagementAdapter = new EventManagementAdapter(data.getMessageText());
+                            rv_all_event.setAdapter(eventManagementAdapter);
+
+                            events.clear();
+                            setEvent(data.getMessageText());
+                        }
                     } else {
                         responseMsg = jsonData.getString("message_text");
                         Utils.showDialog(CalenderActivity.this, responseMsg, false, false);
                     }
+                } else {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(CalenderActivity.this, "Something went wrong please Retry!!!", Toast.LENGTH_SHORT).show();
             }
         }
-    }*/
-
-    public String checkDigit(int number) {
-        return number <= 9 ? "0" + number : String.valueOf(number);
     }
 }

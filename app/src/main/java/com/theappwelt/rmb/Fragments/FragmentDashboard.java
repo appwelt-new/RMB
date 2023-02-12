@@ -3,11 +3,15 @@ package com.theappwelt.rmb.Fragments;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -16,6 +20,8 @@ import android.os.Bundle;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,10 +36,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.theappwelt.rmb.JavaClasses.setDate;
 import com.theappwelt.rmb.activity.Visitor.AddVisitorActivity;
+import com.theappwelt.rmb.activity.auth.SubcriptionActivity;
 import com.theappwelt.rmb.activity.features.RequestFormActivity;
+import com.theappwelt.rmb.activity.features.UpdateProfile;
 import com.theappwelt.rmb.activity.request.RequestListActivity;
 import com.theappwelt.rmb.activity.slipManagement.CreateGreatBhetActivity;
 import com.theappwelt.rmb.activity.slipManagement.MeetingRequestActivity;
@@ -43,6 +50,7 @@ import com.theappwelt.rmb.activity.slipManagement.ReferralsReceived;
 import com.theappwelt.rmb.activity.Visitor.VisitorActivity;
 import com.theappwelt.rmb.model.MeetingCreatedListModel;
 import com.theappwelt.rmb.utilities.Constant;
+import com.theappwelt.rmb.utilities.Method;
 import com.theappwelt.rmb.utilities.ServiceHandler;
 import com.theappwelt.rmb.utilities.Utils;
 
@@ -53,6 +61,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
@@ -102,17 +111,23 @@ public class FragmentDashboard extends Fragment {
     TextView txtRequest;
     TextView txtReqList;
     TextView tv_club;
-
+    CircleImageView profile_pic;
+    CardView profile_card;
     // last meeting summary
     TextView tv_purpose_of_meeting, tv_bussiness_done, tv_no_of_member_attended, tv_no_of_rotarian_member,
-            tv_no_of_nonrotarian_member, tv_reference_given, tv_summary,last_summary_title;
+            tv_no_of_nonrotarian_member, tv_reference_given, tv_summary, last_summary_title, user_name;
     TextView one_to_one, visitorsBroughtCount, referralsReceivedCount, referralsGivenCount, memberConnectedCount;
     CardView c1, c2, c3, c4, c5, c6;
 
     SharedPreferences sh;
     Dialog dialog;
 
+    String last_meeting_id = "";
+    String meeting_member_id = "";
+
     LinearLayout seeMeetingSummary, lst_meet_sum;
+
+    String endDateTime = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,10 +148,13 @@ public class FragmentDashboard extends Fragment {
         branch_id = sh.getString("branch_id", "");
 
         //  monthEventLayout = view.findViewById(R.id.monthEventsLayout);
+        profile_card = view.findViewById(R.id.profile_card);
         tv_club = view.findViewById(R.id.tv_club);
+        user_name = view.findViewById(R.id.user_name);
         txtRequest = view.findViewById(R.id.txtRequest);
         txtReqList = view.findViewById(R.id.txtReqList);
         weekEventLayout = view.findViewById(R.id.weekEventLayout);
+        profile_pic = view.findViewById(R.id.profile_pic);
 //        monthMeetingsLayout = view.findViewById(R.id.monthMeetingsLayout);
         weekMeetingsLayout = view.findViewById(R.id.weekMeetingsLayout);
         greatBhetLayout = view.findViewById(R.id.greatBhetLayout);
@@ -208,8 +226,7 @@ public class FragmentDashboard extends Fragment {
         new getUpcoming().execute();
         new getEventCount().execute();
         new getEventType().execute();
-        new getLastMeetingSummary().execute();
-
+        new getLastMeetingId().execute();
 
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,6 +251,7 @@ public class FragmentDashboard extends Fragment {
             @Override
             public void onClick(View view) {
                 if (lst_meet_sum.getVisibility() == View.GONE) {
+                    new getLastMeetingSummary().execute();
                     lst_meet_sum.setVisibility(View.VISIBLE);
                     last_summary_title.setText("hide Last Meeting Summary");
                 } else {
@@ -244,7 +262,86 @@ public class FragmentDashboard extends Fragment {
         });
 
 
+        profile_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(thiscontext, UpdateProfile.class);
+                startActivity(i);
+            }
+        });
+
         return view;
+    }
+
+    private void checkSubcriptionStatus() {
+        new CheckSubcription().execute();
+    }
+
+    public class CheckSubcription extends AsyncTask<String, Void, String> {
+        String jsonStr = "";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... args) {
+            try {
+                ServiceHandler shh = new ServiceHandler(getContext());
+                RequestBody values = new FormBody.Builder()
+                        .add("member_id", userid)
+                        .build();
+
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "member/check_subscription", ServiceHandler.POST, values);
+
+            } catch (final Exception e) {
+                e.printStackTrace();
+                Log.e("LoginSuccess2", e.toString());
+            }
+            return jsonStr;
+        }
+
+        @Override
+        protected void onPostExecute(String jsonStr) {
+            super.onPostExecute(jsonStr);
+            try {
+                if (jsonStr != null) {
+                    JSONObject jsonData = new JSONObject(jsonStr);
+                    String responseSuccess = String.valueOf(jsonData.getInt("message_code"));
+                    if (responseSuccess.equals("1000")) {
+                        String status = jsonData.getString("message_text");
+                    } else {
+                        String responseMsg = jsonData.getString("message_text");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(thiscontext);
+
+                        // Set the message show for the Alert time
+                        builder.setMessage("Your RMB subcription is not active please pay to continue");
+
+                        // Set Alert Title
+                        builder.setTitle("Alert !");
+
+                        // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
+                        builder.setCancelable(false);
+
+                        // Set the positive button with yes name Lambda OnClickListener method is use of DialogInterface interface.
+                        builder.setPositiveButton("Yes", (DialogInterface.OnClickListener) (dialog, which) -> {
+                            Intent intent = new Intent(thiscontext, SubcriptionActivity.class);
+                            startActivity(intent);
+                        });
+
+                        // Create the Alert dialog
+                        AlertDialog alertDialog = builder.create();
+                        // Show the Alert Dialog box
+                        // ((AlertDialog) alertDialog).getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
+                        alertDialog.show();
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
@@ -431,7 +528,9 @@ public class FragmentDashboard extends Fragment {
 
 
                     } else {
-                        noEventAvailable.setText("" + jsonData.getString("message_text"));
+                        if (!jsonData.getString("message_text").equalsIgnoreCase("No Events Available!")) {
+                            noEventAvailable.setText("" + jsonData.getString("message_text"));
+                        }
 
                         c4.setVisibility(View.VISIBLE);
                         c1.setVisibility(View.GONE);
@@ -681,12 +780,12 @@ public class FragmentDashboard extends Fragment {
                     Log.d("profile", "" + responseSuccess);
                     if (responseSuccess.equals("1000")) {
                         JSONObject userArray = jsonData.getJSONObject("message_text");
-                        Log.d("profile", "" + userArray.toString());
+
                         JSONObject userDetail = userArray.getJSONObject("memberinfo");
                         JSONObject bussinessDetail = userArray.getJSONObject("businessinfo");
                         Log.d("profile", "" + userDetail.toString());
 
-                        tv_club.setText("Your club : " + userDetail.optString("branch_name"));
+                        tv_club.setText(userDetail.optString("branch_name"));
 
                         if (userDetail.optString("role").equalsIgnoreCase("1")) {
                             //       c5.setVisibility(View.VISIBLE);
@@ -697,6 +796,9 @@ public class FragmentDashboard extends Fragment {
                             user_role = userDetail.optString("role");
                             c6.setVisibility(View.GONE);
                         }
+
+
+                        user_name.setText(userDetail.getString("member_first_name").substring(0, 1).toUpperCase() + userDetail.getString("member_first_name").substring(1) + " " + userDetail.getString("member_last_name").substring(0, 1).toUpperCase() + userDetail.getString("member_last_name").substring(1));
 
                         SharedPreferences sharedPreferences = thiscontext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -753,6 +855,18 @@ public class FragmentDashboard extends Fragment {
                         etBusinessCategory.setText(businessDetails.getString("Category_Name"));
                         etBusinessSubCategory.setText(businessDetails.getString("Subcategory_Name"));
 */
+
+                        String imageUrl = userDetail.getString("member_profile_photo");
+                        if (imageUrl != null && !TextUtils.isEmpty(imageUrl)) {
+
+
+                            final String encodedString = imageUrl;
+                            final String pureBase64Encoded = encodedString.substring(encodedString.indexOf(",") + 1);
+
+                            byte[] decodedString = Base64.decode(pureBase64Encoded, Base64.DEFAULT);
+                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            profile_pic.setImageBitmap(decodedByte);
+                        }
                     }
 
                 } else {
@@ -931,8 +1045,8 @@ public class FragmentDashboard extends Fragment {
                 if (!selectedEvent.equalsIgnoreCase("Birthday Event") && !selectedEvent.equalsIgnoreCase("Anniversary Event") &&
                         !selectedEvent.equalsIgnoreCase("Tap to select")
                 ) {
-                    ll_event_end_date.setVisibility(View.VISIBLE);
-                    ll_event_end_time.setVisibility(View.VISIBLE);
+                    //  ll_event_end_date.setVisibility(View.VISIBLE);
+                    //  ll_event_end_time.setVisibility(View.VISIBLE);
                     ll_location.setVisibility(View.VISIBLE);
                     ll_host.setVisibility(View.VISIBLE);
                     ll_url.setVisibility(View.VISIBLE);
@@ -982,11 +1096,14 @@ public class FragmentDashboard extends Fragment {
                 description2 = description.getText().toString();
 
 
+                endDateTime = Method.convertDateTimeFormatApp(date2 + " " + time2, "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss");
+
+
                 if (eventName.equals("") || date2.equals("") || time2.equals("")) {
                     // field missing
                     Toast.makeText(thiscontext, "Enter Details " + eventName + " " + eventType + " " + date2 + " " + time2, Toast.LENGTH_SHORT).show();
                 } else {
-                    if (eventType.contains("Birthday Event")) {
+                    /*if (eventType.contains("Birthday Event")) {
                         // birthday
                         new addBirthDayEvent().execute();
                     } else if (eventType.contains("Anniversary Event")) {
@@ -994,8 +1111,8 @@ public class FragmentDashboard extends Fragment {
                         new addAnniversaryEvent().execute();
                     } else {
                         // main event
-                        new addEvent().execute();
-                    }
+                    }*/
+                    new addEvent().execute();
                 }
             }
         });
@@ -1050,13 +1167,15 @@ public class FragmentDashboard extends Fragment {
                         JSONArray userArray = jsonData.getJSONArray("message_text");
                         for (int i = 0; i < userArray.length(); i++) {
                             JSONObject userDetail = userArray.getJSONObject(i);
-                            if (user_role.equalsIgnoreCase("1")) {
-                                eventTypeList.add(userDetail.getString("event_type_name"));
-                                eventTypeIdList.add(userDetail.getString("event_type_id"));
-                            } else {
-                                if (!userDetail.getString("event_type_id").equalsIgnoreCase("7")) {
+                            if (userDetail.getString("is_deleted").equals("0")) {
+                                if (user_role.equalsIgnoreCase("1")) {
                                     eventTypeList.add(userDetail.getString("event_type_name"));
                                     eventTypeIdList.add(userDetail.getString("event_type_id"));
+                                } else {
+                                    if (!userDetail.getString("event_type_id").equalsIgnoreCase("7")) {
+                                        eventTypeList.add(userDetail.getString("event_type_name"));
+                                        eventTypeIdList.add(userDetail.getString("event_type_id"));
+                                    }
                                 }
                             }
                         }
@@ -1201,7 +1320,7 @@ public class FragmentDashboard extends Fragment {
                 RequestBody values = new FormBody.Builder()
                         .add("eName", eventName)
                         .add("eStartTime", date2 + " " + time2)
-                        .add("eEndTime", EventEndDate + " " + EventEndTime)
+                        .add("eEndTime", endDateTime)
                         .add("eDescription", description2)
                         .add("eCategoryId", business_CategoryId)
                         .add("eBranchId", branch_id)
@@ -1213,6 +1332,23 @@ public class FragmentDashboard extends Fragment {
                         .add("eType", selectedEventId)
                         .build();
                 jsonStr = shh.makeServiceCall(Constant.BASE_URL + "event/eventAdd", ServiceHandler.POST, values);
+
+
+                Log.i("rbtntm", "eName: " + eventName);
+                Log.i("rbtntm", "eStartTime: " + date2 + " " + time2);
+                Log.i("rbtntm", "eEndTime: " + endDateTime);
+                Log.i("rbtntm", "eDescription: " + description2);
+                Log.i("rbtntm", "eCategoryId: " + business_CategoryId);
+                Log.i("rbtntm", "eBranchId: " + branch_id);
+                Log.i("rbtntm", "eLocation: " + event_location);
+                Log.i("rbtntm", "eHost: " + event_host);
+                Log.i("rbtntm", "eURL: " + event_url);
+                Log.i("rbtntm", "ePrice: " + event_price);
+                Log.i("rbtntm", "eRating: 5");
+                Log.i("rbtntm", "eType: " + selectedEventId);
+
+
+                Log.i("TAG", "doInBackground: " + values.toString());
 
             } catch (final Exception e) {
                 e.printStackTrace();
@@ -1341,8 +1477,8 @@ public class FragmentDashboard extends Fragment {
 
                 ServiceHandler shh = new ServiceHandler(getContext());
                 RequestBody values = new FormBody.Builder()
-                        .add("meeting_id", m.getMeetingId())
-                        .add("meeting_member_id", m.getInitiator_id())
+                        .add("meeting_id", last_meeting_id)
+                        .add("meeting_member_id", meeting_member_id)
                         .add("purpose_of_meeting", et_purpose_of_meeting.getText().toString())
                         .add("bussiness_done", et_bussiness_done.getText().toString())
                         .add("no_of_rotarian_member", et_no_of_rotarian_member.getText().toString())
@@ -1430,13 +1566,13 @@ public class FragmentDashboard extends Fragment {
 
                         JSONObject object = jarray.getJSONObject(0);
 
-                        tv_purpose_of_meeting.setText("Meeting Purpose : "+ object.optString("purpose_of_meeting"));
-                        tv_bussiness_done.setText("Bussiness Done : "+object.optString("bussiness_done"));
-                        tv_no_of_member_attended.setText("Member attended : "+object.optString("no_of_member_attended"));
-                        tv_no_of_rotarian_member.setText("Rotarian Member : "+object.optString("no_of_rotarian_member"));
-                        tv_no_of_nonrotarian_member.setText("Non Rotarian Member : "+object.optString("no_of_nonrotarian_member"));
-                        tv_reference_given.setText("Reference Given : "+object.optString("reference_given"));
-                        tv_summary.setText("Summary : "+object.optString("summary"));
+                        tv_purpose_of_meeting.setText("Meeting Purpose : " + object.optString("purpose_of_meeting"));
+                        tv_bussiness_done.setText("Bussiness Done : " + object.optString("bussiness_done"));
+                        tv_no_of_member_attended.setText("Member attended : " + object.optString("no_of_member_attended"));
+                        tv_no_of_rotarian_member.setText("Rotarian Member : " + object.optString("no_of_rotarian_member"));
+                        tv_no_of_nonrotarian_member.setText("Non Rotarian Member : " + object.optString("no_of_nonrotarian_member"));
+                        tv_reference_given.setText("Reference Given : " + object.optString("reference_given"));
+                        tv_summary.setText("Summary : " + object.optString("summary"));
                     }
                 } else {
                     responseMsg = jsonData.getString("message_text");
@@ -1450,5 +1586,76 @@ public class FragmentDashboard extends Fragment {
         }
     }
 
+    public class getLastMeetingId extends AsyncTask<String, Void, String> {
 
+        private String jsonStr, responseSuccess, responseMsg;
+        private JSONObject jsonData;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... args) {
+            try {
+                ServiceHandler shh = new ServiceHandler(getContext());
+
+                jsonStr = shh.makeServiceCall(Constant.BASE_URL + "summary/get_lastmeeting_id", ServiceHandler.GET, null);
+                Log.d("meeting: ", "> " + jsonStr);
+
+            } catch (final Exception e) {
+                e.printStackTrace();
+
+                // workerThread();
+                Log.e("ServiceHandler", e.toString());
+            }
+            return jsonStr;
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onPostExecute(String jsonStr) {
+            super.onPostExecute(jsonStr);
+            try {
+
+                if (jsonStr != null) {
+                    jsonData = new JSONObject(jsonStr);
+                    Log.d("ReferralReceived1", "" + jsonData.toString());
+                    responseSuccess = String.valueOf(jsonData.getInt("message_code"));
+                    Log.d("profile", "" + responseSuccess);
+                    if (responseSuccess.equals("1000")) {
+                        JSONArray jarray = jsonData.getJSONArray("message_text");
+                        JSONObject object = jarray.getJSONObject(0);
+                        //   Toast.makeText(getContext(), "" + object.getString("meeting_id"), Toast.LENGTH_SHORT).show();
+
+                        // Toast.makeText(getContext(), "" + object.getString("meeting_id"), Toast.LENGTH_SHORT).show();
+                        if (object.getString("meeting_id") != null && !object.getString("meeting_id").isEmpty()) {
+                            last_meeting_id = object.getString("meeting_id");
+                            meeting_member_id = object.getString("meeting_member_id");
+                            //   Toast.makeText(getContext(), "" + object.getString("meeting_id"), Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+
+                } else {
+                    responseMsg = jsonData.getString("message_text");
+                    //     Utils.showDialog(FragmentDashboard.this, responseMsg, false, false);
+                }
+            } catch (JSONException jsonException) {
+                jsonException.printStackTrace();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+
+    @Override
+    public void onResume() {
+        checkSubcriptionStatus();
+        super.onResume();
+    }
 }

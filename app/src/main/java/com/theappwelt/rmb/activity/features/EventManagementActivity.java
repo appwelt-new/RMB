@@ -125,7 +125,7 @@ public class EventManagementActivity extends AppCompatActivity {
 
                         if (data.getMessageText() != null && !data.getMessageText().isEmpty()) {
                             rvEventManagement.setLayoutManager(new LinearLayoutManager(EventManagementActivity.this));
-                            eventManagementAdapter = new EventManagementAdapter(EventManagementActivity.this, data.getMessageText());
+                            eventManagementAdapter = new EventManagementAdapter(data.getMessageText());
                             rvEventManagement.setAdapter(eventManagementAdapter);
                         }
                     } else {
